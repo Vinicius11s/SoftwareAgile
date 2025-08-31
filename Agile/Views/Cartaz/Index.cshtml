@@ -1,22 +1,48 @@
 ﻿@{
     Layout = "_Layout";
-    ViewData["Title"] = "vAgile - Início";
+    ViewData["Title"] = "Agile - Início";
 }
 
 <div class="container py-5">
-    <h1 class="text-center fw-bold text-primary mb-5">vAgile</h1>
+    <!-- Linha principal: slogan à esquerda e cards à direita -->
+    <div class="row align-items-center mb-3">
+        <!-- Coluna com nome + slogan -->
+        <div class="col-md-6">
+            <h1 class="fw-bold">
+                <span class="text-dark">software</span><span style="color:#13185d;">Agile</span>
+            </h1>
+            <p class="lead text-muted mt-2">Transformando dados em agilidade.</p>
+        </div>
 
-    <div class="row justify-content-center">
-        <!-- Card do tipo de cartaz -->
-        <div class="col-md-4">
-            <div class="card shadow-lg border-0 rounded-4 hover-shadow" style="cursor:pointer;"
+        <!-- Coluna com cards -->
+        <div class="col-md-6">
+            <!-- Card A4 -->
+            <div class="card shadow-lg border-0 rounded-4 hover-shadow ms-md-auto mb-3"
+                 style="cursor:pointer; max-width: 300px;"
                  onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold">Gerar Cartazes A4</h5>
-                    <p class="card-text text-muted">Clique para escolher o fundo e gerar seus cartazes.</p>
+                    <p class="card-text text-muted">Ideal para impressão em folhas A4.</p>
+                </div>
+            </div>
+
+            <!-- Card Rolo -->
+            <div class="card shadow-lg border-0 rounded-4 hover-shadow ms-md-auto"
+                 style="cursor:pointer; max-width: 300px;"
+                 onclick="location.href='@Url.Action("EscolherFundoRolo", "Cartaz")'">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Gerar Cartazes Papel em Rolo</h5>
+                    <p class="card-text text-muted">Perfeito para impressões contínuas em bobinas.</p>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Logo central -->
+    <div class="text-center my-3">
+        <img src="~/logo/ㅤ/default_transparent_765x625.png"
+             alt="Logo"          
+             class="mb-2">
     </div>
 </div>
 
@@ -27,11 +53,3 @@
         transition: all 0.3s ease;
     }
 </style>
-
-
-
-
-
-
-
-
