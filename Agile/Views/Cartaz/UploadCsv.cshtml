@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Gerar Cartazes - vAgile";
+
+    // Determinar imagem do fundo
+    string fundoSelecionado = ViewData["FundoSelecionado"]?.ToString() ?? "mercearia";
+    string fundoImagem = fundoSelecionado == "mercearia" ? Url.Content("~/images/cartazMercearia.jpeg") : "";
+}
+
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="card shadow-lg border-0 rounded-4" style="max-width: 600px; width: 100%;">
+        <div class="card-body p-5">
+
+            <!-- Título -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-primary">Gerar Cartazes</h2>
+                <p class="text-muted">Transforme seu arquivo CSV em cartazes promocionais de forma ágil e prática.</p>
+            </div>
+
+            <!-- Prévia do fundo selecionado -->
+            <div class="text-center mb-4">
+                <p class="fw-semibold">Fundo selecionado:</p>
+                @if (!string.IsNullOrEmpty(fundoImagem))
+                {
+                    <img src="@fundoImagem" alt="Fundo selecionado" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+                }
+            </div>
+
+            <!-- Formulário -->
+            @using (Html.BeginForm("Gerar", "Cartaz", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <!-- Campo hidden para passar o fundo selecionado -->
+                <input type="hidden" name="fundoSelecionado" value="@fundoSelecionado" />
+
+                <div class="mb-3">
+                    <label for="csv" class="form-label fw-semibold">📂 Arquivo CSV</label>
+                    <input type="file" name="csv" id="csv" class="form-control" required />
+                    <div class="form-text">
+                        Estrutura esperada: <code>descricao;preco</code>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                    🚀 Gerar PDF
+                </button>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ativar validação Bootstrap
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>

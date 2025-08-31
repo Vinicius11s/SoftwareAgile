@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36127.28
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agile", "Agile\Agile.csproj", "{4CD2C512-0D98-4243-B240-0A1BE4939720}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Entities\Domain.csproj", "{0B52E96A-F618-456C-98DE-36DDA833F925}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infraestructure", "Infraestructure\Infraestructure.csproj", "{1C8A4DE9-9200-445D-8E58-C1973FFE326A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4CD2C512-0D98-4243-B240-0A1BE4939720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CD2C512-0D98-4243-B240-0A1BE4939720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CD2C512-0D98-4243-B240-0A1BE4939720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CD2C512-0D98-4243-B240-0A1BE4939720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B52E96A-F618-456C-98DE-36DDA833F925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B52E96A-F618-456C-98DE-36DDA833F925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B52E96A-F618-456C-98DE-36DDA833F925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B52E96A-F618-456C-98DE-36DDA833F925}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C8A4DE9-9200-445D-8E58-C1973FFE326A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C8A4DE9-9200-445D-8E58-C1973FFE326A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C8A4DE9-9200-445D-8E58-C1973FFE326A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C8A4DE9-9200-445D-8E58-C1973FFE326A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F436700-EDA9-4BEF-B7A0-62E8A7B49A10}
+	EndGlobalSection
+EndGlobal

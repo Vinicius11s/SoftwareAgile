@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "vAgile - Início";
+}
+
+<div class="container py-5">
+    <h1 class="text-center fw-bold text-primary mb-5">vAgile</h1>
+
+    <div class="row justify-content-center">
+        <!-- Card do tipo de cartaz -->
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-4 hover-shadow" style="cursor:pointer;"
+                 onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Gerar Cartazes A4</h5>
+                    <p class="card-text text-muted">Clique para escolher o fundo e gerar seus cartazes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+    }
+</style>
+
+
+
+
+
+
+
+
