@@ -5,9 +5,9 @@
 
 <div class="container py-5">
     <!-- Linha principal: slogan à esquerda e cards à direita -->
-    <div class="row align-items-center mb-3">
+    <div class="row align-items-center mb-4">
         <!-- Coluna com nome + slogan -->
-        <div class="col-md-6">
+        <div class="col-12 col-md-6 mb-4 mb-md-0 text-center text-md-start">
             <h1 class="fw-bold">
                 <span class="text-dark">software</span><span style="color:#13185d;">Agile</span>
             </h1>
@@ -15,9 +15,9 @@
         </div>
 
         <!-- Coluna com cards -->
-        <div class="col-md-6">
+        <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
             <!-- Card A4 -->
-            <div class="card shadow-lg border-0 rounded-4 hover-shadow ms-md-auto mb-3"
+            <div class="card shadow-lg border-0 rounded-4 hover-shadow mb-3"
                  style="cursor:pointer; max-width: 300px;"
                  onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
                 <div class="card-body text-center">
@@ -27,9 +27,9 @@
             </div>
 
             <!-- Card Rolo -->
-            <div class="card shadow-lg border-0 rounded-4 hover-shadow ms-md-auto"
+            <div class="card shadow-lg border-0 rounded-4 hover-shadow"
                  style="cursor:pointer; max-width: 300px;"
-                 onclick="location.href='@Url.Action("EscolherFundoRolo", "Cartaz")'">
+                 onclick="location.href='@Url.Action("Index", "Cartaz")'">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold">Gerar Cartazes Papel em Rolo</h5>
                     <p class="card-text text-muted">Perfeito para impressões contínuas em bobinas.</p>
@@ -39,10 +39,10 @@
     </div>
 
     <!-- Logo central -->
-    <div class="text-center my-3">
+    <div class="text-center my-4">
         <img src="~/logo/ㅤ/default_transparent_765x625.png"
-             alt="Logo"          
-             class="img-fluid mb-2"
+             alt="Logo"
+             class="img-fluid"
              style="max-width: 280px; height: auto;">
     </div>
 </div>
