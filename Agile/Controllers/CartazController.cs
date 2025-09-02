@@ -29,14 +29,13 @@ namespace Agile.Controllers
         [HttpGet]
         public IActionResult EscolherFundo()
         {
-            // Aqui você pode passar uma lista de fundos disponíveis para a View
-            // Por enquanto só teremos um fundo: Mercearia
             var fundos = new List<(string Nome, string Imagem, string Id)>
-    {
-        ("Cartaz Mercearia", "~/images/cartazMercearia.jpeg", "mercearia")
-    };
+            {
+                ("Cartaz Mercearia", "~/images/cartazMercearia.jpeg", "mercearia"),
+                ("Cartaz Feira", "~/images/cartazFeira.jpeg", "feira"),
+            };
 
-            return View(fundos); // Passa a lista para a View
+            return View(fundos);
         }
 
         [HttpGet]
@@ -60,6 +59,7 @@ namespace Agile.Controllers
                 string nomeArquivo = fundoSelecionado switch
                 {
                     "mercearia" => "cartazMercearia.jpeg",
+                    "feira" => "cartazFeira.jpeg",
                     _ => "cartazMercearia.jpeg" // padrão
                 };
 

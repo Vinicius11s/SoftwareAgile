@@ -13,8 +13,8 @@
                 <div class="col-md-4 mb-4">
                     <div class="card shadow-lg border-0 rounded-4 hover-shadow" style="cursor:pointer;"
                          onclick="location.href='@Url.Action("UploadCsv", "Cartaz")?fundo=@fundo.Id'">
-                        <img src="~/images/cartazMercearia.jpeg" class="card-img-top" alt="@fundo.Nome">
-                        <div class="card-body text-center">
+                    <img src="@Url.Content(fundo.Imagem)" class="card-img-top" alt="@fundo.Nome">
+                    <div class="card-body text-center">
                             <h5 class="card-title fw-bold">@fundo.Nome</h5>
                         </div>
                     </div>
