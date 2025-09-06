@@ -3,8 +3,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<Infra.Services.CsvServices>();
-builder.Services.AddTransient<Infra.Services.PdfServices>();
+builder.Services.AddTransient<Services.CsvServices>();
+builder.Services.AddTransient<Services.PdfServices>();
 
 var app = builder.Build();
 
@@ -24,7 +24,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cartaz}/{action=Index}/{id?}");
+    pattern: "{controller=Agile}/{action=Index}/{id?}");
 
 app.MapStaticAssets();
 app.MapRazorPages()

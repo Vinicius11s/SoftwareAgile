@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Infra.Services;
-using Entities;
+using Services;
+using Domain.Entities;
 using System.IO;
 using System.Collections.Generic;
+using QuestPDF;
+using Domain.DTOs;
 
 namespace Agile.Controllers
 {
@@ -19,12 +21,6 @@ namespace Agile.Controllers
             _env = env;
         }
 
-        [HttpGet]
-        public IActionResult UploadCsv(string? fundo)
-        {
-            ViewData["FundoSelecionado"] = fundo ?? "mercearia"; // padrão se nada for passado
-            return View();
-        }
 
         [HttpGet]
         public IActionResult EscolherFundo()
@@ -37,16 +33,14 @@ namespace Agile.Controllers
 
             return View(fundos);
         }
-
         [HttpGet]
-        public IActionResult Index(string? fundo)
+        public IActionResult UploadCsv(string? fundo)
         {
-            ViewData["FundoSelecionado"] = fundo;
+            ViewData["FundoSelecionado"] = fundo ?? "mercearia"; // padrão se nada for passado
             return View();
         }
-
         [HttpPost]
-        public IActionResult Gerar(IFormFile csv, string? fundoSelecionado)
+        public IActionResult GerarCartazA5(IFormFile csv, string? fundoSelecionado)
         {
             if (csv == null || csv.Length == 0)
                 return BadRequest("Envie um CSV válido");
@@ -77,7 +71,7 @@ namespace Agile.Controllers
 
             try
             {
-                List<Oferta> ofertas;
+                List<OfertaDTO> ofertas;
                 using (var csvStream = csv.OpenReadStream())
                 {
                     ofertas = _csv.LerOfertas(csvStream);
@@ -86,7 +80,7 @@ namespace Agile.Controllers
                 if (ofertas == null || ofertas.Count == 0)
                     return BadRequest("O CSV não contém dados ou o formato está incorreto.");
 
-                var pdfBytes = _pdf.GerarCartazes(ofertas, fundoBytes);
+                var pdfBytes = PdfServices.GerarCartazes(ofertas, fundoBytes);
 
                 return File(pdfBytes, "application/pdf", "cartazes.pdf");
             }

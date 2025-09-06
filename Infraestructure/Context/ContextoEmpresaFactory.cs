@@ -1,4 +1,4 @@
-﻿using Infraestrutura.Contexto;
+﻿using Infraestructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 

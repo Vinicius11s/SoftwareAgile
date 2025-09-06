@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infraestrutura.Contexto
+namespace Infraestructure.Context
 {
     public class EmpresaContexto : DbContext
     {
@@ -21,7 +21,7 @@ namespace Infraestrutura.Contexto
         {
         }
 
-        public DbSet<Oferta> ofertas { get; set; }
+        public DbSet<Oferta> Ofertas { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

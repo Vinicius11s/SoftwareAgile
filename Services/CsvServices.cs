@@ -1,5 +1,4 @@
-﻿using Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Globalization;
@@ -8,12 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Domain.DTOs;
+using Domain.Entities;
+using Interfaces;
 
-namespace Infra.Services
+namespace Services
 {
-    public class CsvServices
+    public class CsvServices : ICsvService
     {
-        public List<Oferta> LerOfertas(Stream stream)
+        public List<OfertaDTO> LerOfertas(Stream stream)
         {
             var config = new CsvConfiguration(new CultureInfo("pt-BR"))
             {
@@ -25,13 +27,13 @@ namespace Infra.Services
             using var reader = new StreamReader(stream);
             using var csv = new CsvReader(reader, config);
 
-            var ofertas = new List<Oferta>();
+            var ofertas = new List<OfertaDTO>();
             while (csv.Read())
             {
                 var descricao = csv.GetField(0);
                 var preco = csv.GetField<decimal>(1);
 
-                ofertas.Add(new Oferta
+                ofertas.Add(new OfertaDTO
                 {
                     Descricao = descricao,
                     Preco = preco
