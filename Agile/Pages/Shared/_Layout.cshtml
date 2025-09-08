@@ -1,11 +1,10 @@
-﻿<!DOCTYPE html> 
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="icon" type="image/x-icon" href="~/favicon_transparent_32x32.ico" />
-
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,39 +13,48 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Agile.styles.css" asp-append-version="true" />
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body class="d-flex flex-column min-vh-100 text-light" style="background-color: #121212;">
 
     <!-- Navbar -->
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm">
             <div class="container">
-                <a class="navbar-brand fw-bold text-primary" asp-controller="Agile" asp-action="Index">
+                <!-- Logo -->
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Agile" asp-action="Index">
+                    <img src="~/logo/logo-com-nome.png" alt="Logo" style="height:50px;">
                 </a>
+
+                <!-- Botão hamburguer -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                         aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse justify-content-start" id="navbarNav">
-                    <ul class="navbar-nav">
+                <!-- Links -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto gap-lg-4 text-center">
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Agile" asp-action="Index">Home</a>
+                            <a class="nav-link fw-semibold text-white" asp-controller="Agile" asp-action="Index">HOME</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-page="/Privacy">Política</a>
+                            <a class="nav-link fw-semibold text-white" href="#quem-somos">QUEM SOMOS</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-primary ms-3 px-4 fw-semibold shadow-sm"
-                               asp-controller="Cartaz" asp-action="EscolherFundo">
-                                Gerar Cartazes A5
-                            </a>
+                            <a class="nav-link fw-semibold text-white" href="#soluções">SOLUÇÕES</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-primary ms-3 px-4 fw-semibold shadow-sm"
-                               asp-controller="Cartaz" asp-action="EscolherFundo">
-                                Gerar Cartazes A4
-                            </a>
+                            <a class="nav-link fw-semibold text-white" href="#planos">PLANOS</a>
+                        </li>
+                    </ul>
+
+                    <!-- Botões à direita -->
+                    <ul class="navbar-nav ms-auto gap-2">
+                        <li class="nav-item">
+                            <a class="btn btn-outline fw-semibold px-3" href="#login">LOGIN</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline fw-semibold px-3" href="#suporte">SUPORTE</a>
                         </li>
                     </ul>
                 </div>
@@ -60,7 +68,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-auto">
+    <footer class="bg-black text-light py-4 mt-auto">
         <div class="container text-center small">
             © 2025 softwareAgile · Transformando dados em agilidade - dev Vinicius Santana
         </div>
@@ -71,5 +79,38 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <style>
+        /* Aumenta a altura da navbar */
+        .navbar {
+            padding-top: 1.2rem; /* antes 0.5-0.75rem */
+            padding-bottom: 1.2rem;
+        }
+
+        /* Links da navbar menores e mais finos */
+        .navbar-nav .nav-link {
+            font-size: 0.8rem; /* menor que o padrão */
+            font-weight: 300; /* mais fino */
+        }
+
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link.active {
+                color: #fff600 !important;
+            }
+
+        /* Botões LOGIN e SUPORTE */
+        .btn-outline {
+            border-color: #fff600 !important; /* borda amarela */
+            color: #fff !important; /* texto branco */
+            font-size: 0.8rem; /* diminuir tamanho da fonte */
+            font-weight: 300 !important; /* deixar mais fina */
+            padding: 0.35rem 1rem;
+        }
+
+            .btn-outline:hover {
+                background-color: #fff600 !important;
+                color: black !important;
+            }
+    </style>
 </body>
 </html>
