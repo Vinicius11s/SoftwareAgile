@@ -80,7 +80,7 @@ namespace Agile.Controllers
                 if (ofertas == null || ofertas.Count == 0)
                     return BadRequest("O CSV não contém dados ou o formato está incorreto.");
 
-                var pdfBytes = PdfServices.GerarCartazes(ofertas, fundoBytes);
+                var pdfBytes = _pdf.GerarCartazes(ofertas, fundoBytes);
 
                 return File(pdfBytes, "application/pdf", "cartazes.pdf");
             }

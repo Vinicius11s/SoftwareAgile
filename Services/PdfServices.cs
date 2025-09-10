@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs;
 using Domain.Entities;
+using Interfaces;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -9,9 +10,9 @@ using QDocument = QuestPDF.Fluent.Document;
 
 namespace Services
 {
-    public class PdfServices
+    public class PdfServices : IPdfService
     {
-        public static byte[] GerarCartazes(List<OfertaDTO> ofertas, byte[]? fundo = null)
+        public byte[] GerarCartazes(List<OfertaDTO> ofertas, byte[]? fundo = null)
         {
             // Define a licença do QuestPDF como "Community" (gratuita).
             QuestPDF.Settings.License = LicenseType.Community;

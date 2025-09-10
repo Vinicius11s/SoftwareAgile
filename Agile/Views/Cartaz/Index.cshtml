@@ -1,0 +1,29 @@
+﻿@model List<(string Nome, string Imagem, string Id)>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Escolher Fundo - vAgile";
+}
+
+<div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
+    <!-- Card A4 -->
+    <div class="card shadow-lg border-0 rounded-4 hover-shadow mb-3"
+         style="cursor:pointer; max-width: 300px;"
+         onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
+        <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Gerar Cartazes A5</h5>
+            <p class="card-text text-muted">Ideal para impressão em folhas A4 divididas ao centro.</p>
+        </div>
+    </div>
+
+    <!-- Card Rolo -->
+    <div class="card shadow-lg border-0 rounded-4 hover-shadow"
+         style="cursor:pointer; max-width: 300px;"
+         onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
+        <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Gerar Cartazes A4</h5>
+            <p class="card-text text-muted">Ideal para impressão em folhas A4</p>
+        </div>
+    </div>
+</div>
+</div>

@@ -3,38 +3,28 @@
     ViewData["Title"] = "Agile - Início";
 }
 
-<div class="container py-5">
-    <!-- Linha principal: slogan à esquerda e cards à direita -->
-    <div class="row align-items-center mb-4">
-        <!-- Coluna com nome + slogan -->
-        <div class="col-12 col-md-6 mb-4 mb-md-0 text-center text-md-start">
-            <p class="lead text-muted mt-2">Transformando dados em agilidade.</p>
-        </div>
-
-        <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
-            <!-- Card A4 -->
-            <div class="card shadow-lg border-0 rounded-4 hover-shadow mb-3"
-                 style="cursor:pointer; max-width: 300px;"
-                 onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">Gerar Cartazes A5</h5>
-                    <p class="card-text text-muted">Ideal para impressão em folhas A4 divididas ao centro.</p>
-                </div>
-            </div>
-
-            <!-- Card Rolo -->
-            <div class="card shadow-lg border-0 rounded-4 hover-shadow"
-                 style="cursor:pointer; max-width: 300px;"
-                 onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">Gerar Cartazes A4</h5>
-                    <p class="card-text text-muted">Ideal para impressão em folhas A4</p>
-                </div>
-            </div>
+<div class="container pt-3 pb-5">
+    <div class="row mb-4">
+        <div class="col-12 text-end">
+            <p class="slogan_maior lead text-white mt-0 slogan-direita">
+                Transformando dados em agilidade.
+            </p>
         </div>
     </div>
 
-    <!-- Logo central -->
+    <div class="row align-items-center justify-content-center mt-0">
+        <div class="col-12 col-md-5 text-center">
+            <img src="~/logo/Card_INDEX_AGILE.png" class="img-fluid custom-img-position"
+                 style="max-width: height: auto;" alt="Descrição da imagem">
+        </div>
+        <div class="col-12 col-md-5">
+            <p class="card-text text-white">
+                Adicione um texto descritivo aqui. Este espaço é perfeito para destacar informações importantes ou dar contexto à sua imagem.
+                Adicione um texto descritivo aqui. Este espaço é perfeito para destacar informações importantes ou dar contexto à sua imagem.
+            </p>
+        </div>
+    </div>
+
     <div class="text-center my-4">
         <img src="~/logo/ㅤ/default_transparent_765x625.png"
              alt="Logo"
@@ -44,10 +34,51 @@
 </div>
 
 <style>
+    /* -------------------------------------- */
+    /* ESTILOS PARA TODAS AS TELAS (DESKTOP E MOBILE) */
+    /* -------------------------------------- */
+    .card-text{
+        margin-top: -305px; /* aproxima o texto da logo */
+    }
+    .slogan_maior {
+        font-size: 2.5rem;
+    }
+
+    .slogan-direita {
+        position: relative;
+        right: 25px;
+    }
+
     .hover-shadow:hover {
         box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
         transform: translateY(-5px);
         transition: all 0.3s ease;
     }
-</style>
 
+    .card-img-pequena {
+        height: auto;
+        margin: auto;
+        display: block;
+    }
+
+    .custom-img-position {
+        position: relative;
+        top: -130px;
+        left: -135px;
+    }
+
+    /* -------------------------------------- */
+    /* ESTILOS ESPECÍFICOS PARA TELAS MOBILE */
+    /* -------------------------------------- */
+    @@media (max-width: 768px) {
+        .slogan-direita {
+            right: 0;
+            text-align: center;
+        }
+
+        .custom-img-position {
+            top: 0;
+            left: 0;
+        }
+    }
+</style>
