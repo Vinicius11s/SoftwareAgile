@@ -1,84 +1,74 @@
 ﻿@{
     Layout = "_Layout";
-    ViewData["Title"] = "Agile - Início";
+    ViewData["Title"] = "Agile - Home";
 }
+<head>
+    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
+    <title>Agile - Home</title>
+</head>
 
-<div class="container pt-3 pb-5">
-    <div class="row mb-4">
-        <div class="col-12 text-end">
-            <p class="slogan_maior lead text-white mt-0 slogan-direita">
-                Transformando dados em agilidade.
-            </p>
+<body class="d-flex flex-column min-vh-100 text-light body theme-dark">
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+    <!-- A classe do body provavelmente vem do Bootstrap + seu CSS -->
+    <!-- Seção  -->
+    <div class="primary_section">
+
+        <!-- Título principal do cabeçalho -->
+        <h1>A SUA EMPRESA MERECE MAIS QUE PROCESSOS, MERECE PROCESSOS ÁGEIS. MERECE AUTOMAÇÃO.</h1>
+
+        <!-- Parágrafo de descrição -->
+        <p>Venha conhcecer o Agile! Diga Adeus ao trabalho manual, reduzindo a carga de trabalho em 99% do tempo, minimize os erros humanos e ganhe produtividade em seu dia-a-dia corporativo.</p>
+
+        <!-- Botões de ação -->
+        <div class="buttons">
+            <a href="#" class="btn btn-primary">SOLICITAR DEMONSTRAÇÃO</a>
+            <a href="#" class="btn btn-secondary">NOSSO SOFTWARE</a>
         </div>
     </div>
 
-    <div class="row align-items-center justify-content-center mt-0">
-        <div class="col-12 col-md-5 text-center">
-            <img src="~/logo/Card_INDEX_AGILE.png" class="img-fluid custom-img-position"
-                 style="max-width: height: auto;" alt="Descrição da imagem">
-        </div>
-        <div class="col-12 col-md-5">
-            <p class="card-text text-white">
-                Adicione um texto descritivo aqui. Este espaço é perfeito para destacar informações importantes ou dar contexto à sua imagem.
-                Adicione um texto descritivo aqui. Este espaço é perfeito para destacar informações importantes ou dar contexto à sua imagem.
-            </p>
+    <!-- Conteúdo principal da página -->
+    <div class="main-content">
+        <!-- Imagem ilustrativa -->
+        <img src="~/images/EscritorioAgilee.png" alt="Mulher feliz em escritorio">
+
+        <!-- Texto ao lado da imagem -->
+        <div class="content-text">
+            <h2>CARTAZES AUTOMÁTICOS</h2>
+            <p>Crie centenas de cartazes de oferta em minutos e impulsione suas vendas.</p>
+            <p>Com o software Agile, você transforma dados em resultados, ganhando agilidade para focar no que realmente importa: o crescimento da sua loja.</p>
+
+            <!-- Bloco com métricas da empresa -->
+            <div class="metrics">
+                <div class="metric-item">
+                    <span>+1,000</span>
+                    <p>Possibilidade de Cartazes por Dia!</p>
+                </div>
+                <div class="metric-item">
+                    <span>+99%</span>
+                    <p>Tempo Otimizado.</p>
+                </div>
+                <div class="metric-item">
+                    <span>+10</span>
+                    <p>Possibilidade de Artes Diferentes para sua Loja!</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="text-center my-4">
-        <img src="~/logo/ㅤ/default_transparent_765x625.png"
-             alt="Logo"
-             class="img-fluid"
-             style="max-width: 280px; height: auto;">
-    </div>
-</div>
-
-<style>
-    /* -------------------------------------- */
-    /* ESTILOS PARA TODAS AS TELAS (DESKTOP E MOBILE) */
-    /* -------------------------------------- */
-    .card-text{
-        margin-top: -305px; /* aproxima o texto da logo */
-    }
-    .slogan_maior {
-        font-size: 2.5rem;
-    }
-
-    .slogan-direita {
-        position: relative;
-        right: 25px;
-    }
-
-    .hover-shadow:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
-        transform: translateY(-5px);
-        transition: all 0.3s ease;
-    }
-
-    .card-img-pequena {
-        height: auto;
-        margin: auto;
-        display: block;
-    }
-
-    .custom-img-position {
-        position: relative;
-        top: -130px;
-        left: -135px;
-    }
-
-    /* -------------------------------------- */
-    /* ESTILOS ESPECÍFICOS PARA TELAS MOBILE */
-    /* -------------------------------------- */
-    @@media (max-width: 768px) {
-        .slogan-direita {
-            right: 0;
-            text-align: center;
-        }
-
-        .custom-img-position {
-            top: 0;
-            left: 0;
-        }
-    }
-</style>
+    <!-- Botão flutuante do WhatsApp -->
+    <a href="https://wa.me/seunumerodecelular" class="whatsapp-btn">
+        <!-- Ícone de balão de mensagem (SVG) -->
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="24" height="24"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             class="feather feather-message-circle">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+    </a>
+</body>
+</html>

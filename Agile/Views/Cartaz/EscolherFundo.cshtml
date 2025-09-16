@@ -3,17 +3,17 @@
     ViewData["Title"] = "Escolher Fundo - vAgile";
 }
 
-    <div class="container py-5">
-        <h2 class="text-center fw-bold text-primary mb-5">Escolha o Fundo do Cartaz</h2>
+    <div class="container py-5" style="background: radial-gradient( circle at top left, #111 0%, #000 60%); border-radius: 16px;">
+        <h2 class="text-center fw-bold text-light mb-5">Escolha o Fundo do Cartaz</h2>
         <div class="row justify-content-center">
             @foreach (var fundo in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg border-0 rounded-4 hover-shadow" style="cursor:pointer;"
-                         onclick="location.href='@Url.Action("UploadCsv", "Cartaz")?fundo=@fundo.Id'">
-                    <img src="@Url.Content(fundo.Imagem)" class="card-img-top" alt="@fundo.Nome">
+                    <div class="card bg-dark text-light shadow-lg border-0 rounded-4 hover-shadow" style="cursor:pointer;"
+                         onclick="location.href='@Url.Action("UploadCsv", "Cartaz")?fundo=@fundo.Item3'">
+                    <img src="@Url.Content(fundo.Item2)" class="card-img-top" alt="@fundo.Item1" style="border-top-left-radius:1rem;border-top-right-radius:1rem;">
                     <div class="card-body text-center">
-                            <h5 class="card-title fw-bold">@fundo.Nome</h5>
+                            <h5 class="card-title fw-bold text-white">@fundo.Item1</h5>
                         </div>
                     </div>
                 </div>
@@ -21,11 +21,5 @@
         </div>
     </div>
 
-    <style>
-        .hover-shadow:hover {
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.2);
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
-        }
-    </style>
+
 

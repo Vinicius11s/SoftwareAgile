@@ -1,0 +1,40 @@
+.body{
+    background-color: black;
+}
+
+/* Ajustes da navbar */
+.navbar {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+
+/* Centralizar os links (HOME, QUEM SOMOS, SOLUÇÕES, PLANOS) */
+.navbar-nav.mx-auto {
+    justify-content: center;
+    width: 100%;
+}
+
+/* Links da navbar menores e mais finos */
+.navbar-nav .nav-link {
+    font-size: 0.7rem;
+    font-weight: 300;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #fff600 !important;
+}
+
+/* Botões LOGIN e SUPORTE */
+.btn-outline {
+    border-color: #fff600 !important;
+    color: #fff !important;
+    font-size: 0.65rem;
+    font-weight: 300 !important;
+    padding: 0.10rem 0.3rem; /* menor altura */
+}
+
+.btn-outline:hover {
+    background-color: #fff600 !important;
+    color: black !important;
+}

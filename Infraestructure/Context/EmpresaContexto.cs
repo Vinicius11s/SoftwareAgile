@@ -22,14 +22,11 @@ namespace Infraestructure.Context
         }
 
         public DbSet<Oferta> Ofertas { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //Server Master = DESKTOP-VSA3AAA
-            //Server Toledo = LAB10-12
-            //localhost\SQLEXPRESS
-            optionsBuilder.UseSqlServer(@"Server=localhost\SQLEXPRESS;
-                DataBase=dbEmpresa2025(2);integrated security=true;TrustServerCertificate=True;");
+            // Configuração via Program.cs -> AddDbContext + appsettings.json
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,3 +1,10 @@
+using Infraestructure.Repository;
+using Interfaces.Repository;
+using Interfaces.Service;
+using Services;
+using Infraestructure.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +13,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<Services.CsvServices>();
 builder.Services.AddTransient<Services.PdfServices>();
 
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddDbContext<EmpresaContexto>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

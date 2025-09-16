@@ -1,0 +1,52 @@
+﻿@using Domain.DTOs
+@model UsuarioDTO
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Agile - Login";
+}
+
+
+
+<link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+<div class="container pt-3 pb-5 theme-dark">
+    <div class="row align-items-center justify-content-center mt-5">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card card-dark text-white p-4 login-card">
+                <div class="text-center mb-4">
+                    <img src="~/logo/default_transparent_1000x1000.png"
+                         alt="Logo"
+                         class="img-fluid"
+                         style="max-width: 150px; height: auto;">
+                </div>
+                <h3 class="text-center mb-1">Login</h3>
+                <p class="text-center text-secondary-soft mb-4">Acesse sua conta para continuar</p>
+                <form action="@Url.Action("ValidarLogin", "Login")" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Login" class="form-label">Login</label>
+                        <input type="text" asp-for="Login" class="form-control input-dark" placeholder="seu.login">
+                        <span asp-validation-for="Login" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Senha" class="form-label">Senha</label>
+                        <input type="password" asp-for="Senha" class="form-control input-dark" placeholder="••••••••">
+                        <span asp-validation-for="Senha" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3 form-check d-flex justify-content-between">
+                        <div>
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Lembrar-me</label>
+                        </div>
+                        <a href="#" class="link-muted">Esqueceu a senha?</a>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-accent">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

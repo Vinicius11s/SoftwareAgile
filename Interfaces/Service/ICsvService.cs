@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.DTOs;
 
-namespace Interfaces
+namespace Interfaces.Service
 {
     public interface ICsvService
     {

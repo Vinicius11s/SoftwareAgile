@@ -1,0 +1,174 @@
+body {
+    font-family: Arial, sans-serif; /* Define a fonte principal da página */
+    color: #fff; /* Cor padrão do texto */
+    background-image: url('/images/fundoIndex.png'); /* Caminho da imagem */
+    background-size: cover; /* Faz a imagem cobrir toda a tela */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita repetir a imagem */
+    background-color: #000; /* Cor fallback caso a imagem não carregue */
+}
+
+/* --- HEADER (cabeçalho) --- */
+.primary_section {
+    margin-top: -85px;
+    text-align: center; /* Centraliza o conteúdo (texto/botões) */
+    padding: 100px 20px; /* Espaçamento interno grande em cima e nas laterais */
+    position: relative; /* Necessário para posicionar os elementos internos */
+    overflow: hidden; /* Esconde partes que ultrapassem a área */
+}
+
+/* Container de elementos decorativos no header */
+.header-bg-elements {
+    position: absolute; /* Fica fixo dentro do header */
+    top: 0;
+    left: 0; /* Começa no canto superior esquerdo */
+    width: 100%;
+    height: 100%; /* Ocupa todo o header */
+    pointer-events: none; /* Ignora cliques do usuário */
+    z-index: 1; /* Fica atrás do texto */
+}
+
+    .header-bg-elements img {
+        opacity: 0.1; /* Deixa as imagens transparentes */
+        position: absolute; /* Para posicionar livremente no header */
+    }
+
+    /* SVG do lado esquerdo */
+    .header-bg-elements .car-left {
+        top: 50%; /* Verticalmente no meio */
+        left: -100px; /* Empurrado para fora do lado esquerdo */
+        width: 300px; /* Tamanho */
+        transform: translateY(-50%) rotate(10deg); /* Centraliza no eixo Y e rotaciona */
+    }
+
+    /* SVG do lado direito */
+    .header-bg-elements .car-right {
+        top: 50%;
+        right: -100px; /* Empurrado para fora do lado direito */
+        width: 300px;
+        transform: translateY(-50%) rotate(-10deg);
+    }
+
+/* Título principal */
+.header h1 {
+    background-color: transparent; /* Sem fundo */
+    font-size: 3em; /* Tamanho bem grande */
+    margin-bottom: 20px; /* Espaço abaixo */
+    position: relative;
+    z-index: 2; /* Fica acima do fundo decorativo */
+}
+
+/* Subtítulo */
+.header p {
+    background-color: transparent;
+    font-size: 1.2em; /* Texto médio */
+    max-width: 600px; /* Limita a largura */
+    margin: 45px auto 40px; /* Centraliza e dá espaço embaixo */
+    position: relative;
+    z-index: 2;
+}
+
+/* Container dos botões */
+.buttons {
+    display: flex; /* Alinha lado a lado */
+    justify-content: center; /* Centraliza horizontalmente */
+    gap: 20px; /* Espaço entre os botões */
+    position: relative;
+    margin-top: 60px;
+    z-index: 2;
+}
+
+/* Estilo base de todos os botões */
+.btn {
+    padding: 15px 30px; /* Espaçamento interno */
+    text-decoration: none; /* Remove sublinhado */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Animação suave na cor */
+}
+
+/* Botão amarelo principal */
+.btn-primary {
+    background-color: #FFD700; /* Amarelo */
+    color: #000; /* Texto preto */
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #e6c200; /* Amarelo mais escuro no hover */
+    }
+
+/* Botão secundário (transparente com borda amarela) */
+.btn-secondary {
+    color: white; /* Texto amarelo */
+    background-color: black;
+    border: 2px solid #FFD700; /* Borda amarela */
+}
+
+    .btn-secondary:hover {
+        background-color: #e6c200; /* Amarelo mais escuro no hover */
+        color: #000; /* Texto preto */
+    }
+
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-content {
+    display: flex; /* Organiza em linha (imagem + texto lado a lado) */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    gap: 50px; /* Espaço entre imagem e texto */
+    padding: 50px 20px; /* Espaçamento interno */
+    background-color: #000; /* Fundo preto */
+}
+
+    .main-content img {
+        max-width: 400px; /* Limita tamanho da imagem */
+        border-radius: 10px; /* Bordas arredondadas */
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); /* Sombra amarela suave */
+    }
+
+/* Texto ao lado da imagem */
+.content-text {
+    max-width: 500px; /* Limita largura */
+}
+
+    .content-text h2 {
+        font-size: 2.5em; /* Título grande */
+        margin-bottom: 20px;
+    }
+
+    .content-text p {
+        font-size: 1.1em; /* Texto médio */
+        line-height: 1.6; /* Espaçamento entre linhas */
+    }
+
+/* Métricas (clientes, usuários, anos) */
+.metrics {
+    display: flex; /* Alinha lado a lado */
+    gap: 40px; /* Espaço entre blocos */
+    margin-top: 30px;
+}
+
+.metric-item {
+    text-align: center; /* Centraliza cada métrica */
+}
+
+    .metric-item span {
+        font-size: 2.5em; /* Números bem grandes */
+        font-weight: bold;
+        color: #FFD700; /* Amarelo */
+    }
+
+/* --- BOTÃO WHATSAPP --- */
+.whatsapp-btn {
+    position: fixed; /* Fica fixo na tela mesmo rolando */
+    bottom: 30px; /* Distância da parte de baixo */
+    right: 30px; /* Distância da lateral direita */
+    background-color: #25D366; /* Verde do WhatsApp */
+    color: #fff;
+    padding: 15px;
+    border-radius: 50%; /* Formato circular */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para destaque */
+    font-size: 24px; /* Ícone grande */
+    text-decoration: none; /* Remove sublinhado */
+    z-index: 1000; /* Garante que fica acima de tudo */
+}

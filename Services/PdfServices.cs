@@ -1,6 +1,6 @@
 ﻿using Domain.DTOs;
 using Domain.Entities;
-using Interfaces;
+using Interfaces.Service;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;

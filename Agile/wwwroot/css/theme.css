@@ -1,0 +1,60 @@
+/* Tema escuro minimalista com acentos amarelos */
+
+:root {
+    --bg-dark: #0f0f10;
+    --bg-card: #161719;
+    --text-primary: #f2f2f2;
+    --text-secondary: #bdbdbd;
+    --accent: #f5c518; /* amarelo */
+    --accent-hover: #e0b50f;
+    --border-color: #2a2c2f;
+}
+
+.theme-dark {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+}
+
+.card-dark {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.text-secondary-soft {
+    color: var(--text-secondary) !important;
+}
+
+.btn-accent {
+    background-color: var(--accent);
+    color: #111;
+    border: none;
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+    background-color: var(--accent-hover);
+    color: #111;
+}
+
+.input-dark.form-control,
+input[type="text"].form-control,
+input[type="password"].form-control {
+    background-color: #1b1d20;
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.input-dark.form-control:focus,
+input[type="text"].form-control:focus,
+input[type="password"].form-control:focus {
+    background-color: #1f2125;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 .2rem rgba(245,197,24,.15);
+}
+
+.link-muted { color: var(--text-secondary) !important; }
+.link-muted:hover { color: var(--accent) !important; }
+
+

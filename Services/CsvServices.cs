@@ -9,7 +9,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Domain.DTOs;
 using Domain.Entities;
-using Interfaces;
+using Interfaces.Service;
 
 namespace Services
 {

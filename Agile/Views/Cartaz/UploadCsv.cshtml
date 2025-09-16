@@ -4,17 +4,17 @@
 
     // Determinar imagem do fundo
     string fundoSelecionado = ViewData["FundoSelecionado"]?.ToString() ?? "mercearia";
-    string fundoImagem = fundoSelecionado == "mercearia" ? Url.Content("~/images/cartazMercearia.jpeg") : "";
+    string fundoImagem = fundoSelecionado == "mercearia" ? Url.Content("~/fundos/cartazMercearia.jpeg") : "";
 }
 
-<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
-    <div class="card shadow-lg border-0 rounded-4" style="max-width: 600px; width: 100%;">
+<div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #0b0b0b 0%, #000 60%);">
+    <div class="card bg-dark text-light shadow-lg border-0 rounded-4" style="max-width: 600px; width: 100%;">
         <div class="card-body p-5">
 
             <!-- Título -->
             <div class="text-center mb-4">
-                <h2 class="fw-bold text-primary">Gerar Cartazes</h2>
-                <p class="text-muted">Transforme seu arquivo CSV em cartazes promocionais de forma ágil e prática.</p>
+                <h2 class="fw-bold text-warning">Gerar Cartazes</h2>
+                <p class="text-secondary">Transforme seu arquivo CSV em cartazes promocionais de forma ágil e prática.</p>
             </div>
 
             <!-- Prévia do fundo selecionado -->
@@ -22,7 +22,7 @@
                 <p class="fw-semibold">Fundo selecionado:</p>
                 @if (!string.IsNullOrEmpty(fundoImagem))
                 {
-                    <img src="@fundoImagem" alt="Fundo selecionado" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+                    <img src="@fundoImagem" alt="Fundo selecionado" class="img-fluid rounded shadow-sm" style="max-height: 200px; border:1px solid #222;">
                 }
             </div>
 
@@ -36,13 +36,13 @@
 
                 <div class="mb-3">
                     <label for="csv" class="form-label fw-semibold">📂 Arquivo CSV</label>
-                    <input type="file" name="csv" id="csv" class="form-control" required />
-                    <div class="form-text">
+                    <input type="file" name="csv" id="csv" class="form-control bg-black text-light border-secondary" required />
+                    <div class="form-text text-secondary">
                         Estrutura esperada: <code>descricao;preco</code>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                <button type="submit" class="btn btn-warning w-100 py-2 fw-bold shadow-sm">
                     🚀 Gerar PDF
                 </button>
             }

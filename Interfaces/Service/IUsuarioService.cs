@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interfaces
+namespace Interfaces.Service
 {
-    public interface IPdfService
+    public interface IUsuarioService
     {
-        public byte[] GerarCartazes(List<OfertaDTO> ofertas, byte[]? fundo = null);
+        bool ValidarLogin(UsuarioDTO model);
     }
 }

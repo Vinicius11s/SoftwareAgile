@@ -21,14 +21,18 @@ namespace Agile.Controllers
             _env = env;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         [HttpGet]
         public IActionResult EscolherFundo()
         {
             var fundos = new List<(string Nome, string Imagem, string Id)>
             {
-                ("Cartaz Mercearia", "~/images/cartazMercearia.jpeg", "mercearia"),
-                ("Cartaz Feira", "~/images/cartazFeira.jpeg", "feira"),
+                ("Cartaz Mercearia", "~/fundos/cartazMercearia.jpeg", "mercearia"),
+                ("Cartaz Feira", "~/fundos/cartazFeira.jpeg", "feira"),
             };
 
             return View(fundos);
@@ -57,7 +61,7 @@ namespace Agile.Controllers
                     _ => "cartazMercearia.jpeg" // padrão
                 };
 
-                string imagePath = Path.Combine(_env.WebRootPath, "images", nomeArquivo);
+                string imagePath = Path.Combine(_env.WebRootPath, "fundos", nomeArquivo);
 
                 if (!System.IO.File.Exists(imagePath))
                     return BadRequest($"O arquivo de fundo '{nomeArquivo}' não foi encontrado.");
