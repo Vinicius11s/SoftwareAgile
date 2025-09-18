@@ -21,5 +21,10 @@ namespace Infraestructure.Repository
         {
             return contexto.Usuarios.Any(u => u.Login == model.Login && u.Senha == model.Senha);
         }
+
+        public Usuario? ObterUsuarioPorLogin(UsuarioDTO model)
+        {
+            return contexto.Usuarios.FirstOrDefault(u => u.Login == model.Login && u.Senha == model.Senha);
+        }
     }
 }

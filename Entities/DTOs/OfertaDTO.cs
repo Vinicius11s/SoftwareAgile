@@ -10,6 +10,7 @@ namespace Domain.DTOs
     {
         public int Id { get; set; }
         public string? Descricao { get; set; } = string.Empty;
+        public string Gramagem { get; set; } = string.Empty;
         public decimal Preco { get; set; }
     }
 }

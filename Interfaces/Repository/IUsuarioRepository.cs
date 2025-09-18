@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Interfaces.Repository
     public interface IUsuarioRepository
     {
         public bool ValidarLogin(UsuarioDTO model);
+        public Usuario? ObterUsuarioPorLogin(UsuarioDTO model);
     }
 }

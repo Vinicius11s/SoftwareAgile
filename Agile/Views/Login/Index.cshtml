@@ -6,35 +6,49 @@
     ViewData["Title"] = "Agile - Login";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+}
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('body_login');
+        });
+    </script>
+}
 
-<link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
-<div class="container pt-3 pb-5 theme-dark">
-    <div class="row align-items-center justify-content-center mt-5">
+<section class="container pt-3 pb-5">
+    <div class="row align-items-center justify-content-center" style="margin-top: -85px; padding-top: 100px;">
         <div class="col-12 col-md-6 col-lg-4">
-            <div class="card card-dark text-white p-4 login-card">
-                <div class="text-center mb-4">
+            <article class="card card-dark text-white p-4 login-card">
+                <header class="text-center mb-4">
                     <img src="~/logo/default_transparent_1000x1000.png"
-                         alt="Logo"
+                         alt="Logo Agile"
                          class="img-fluid"
                          style="max-width: 150px; height: auto;">
-                </div>
-                <h3 class="text-center mb-1">Login</h3>
-                <p class="text-center text-secondary-soft mb-4">Acesse sua conta para continuar</p>
-                <form action="@Url.Action("ValidarLogin", "Login")" method="post">
+                    <h1 class="text-center mb-1">Login</h1>
+                    <p class="text-center text-secondary-soft mb-4">Acesse sua conta para continuar</p>
+                </header>
+                
+                <form action="@Url.Action("ValidarLogin", "Login")" method="post" role="form">
                     @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3" role="alert"></div>
 
                     <div class="mb-3">
                         <label asp-for="Login" class="form-label">Login</label>
-                        <input type="text" asp-for="Login" class="form-control input-dark" placeholder="seu.login">
+                        <input type="text" asp-for="Login" class="form-control input-dark" placeholder="seu.login" required>
                         <span asp-validation-for="Login" class="text-danger"></span>
                     </div>
+                    
                     <div class="mb-3">
                         <label asp-for="Senha" class="form-label">Senha</label>
-                        <input type="password" asp-for="Senha" class="form-control input-dark" placeholder="••••••••">
+                        <input type="password" asp-for="Senha" class="form-control input-dark" placeholder="••••••••" required>
                         <span asp-validation-for="Senha" class="text-danger"></span>
                     </div>
+                    
                     <div class="mb-3 form-check d-flex justify-content-between">
                         <div>
                             <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -42,11 +56,12 @@
                         </div>
                         <a href="#" class="link-muted">Esqueceu a senha?</a>
                     </div>
+                    
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-accent">Entrar</button>
                     </div>
                 </form>
-            </div>
+            </article>
         </div>
     </div>
-</div>
+</section>

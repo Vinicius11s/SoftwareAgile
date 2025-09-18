@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Agile</title>
+    <link rel="icon" type="image/png" href="~/logo/default_transparent_765x625.png" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
@@ -34,6 +35,12 @@
                         <li class="nav-item">
                             <a class="nav-link fw-semibold text-white" asp-controller="Agile" asp-action="Index">HOME</a>
                         </li>
+                        @if (Context.Session.GetString("UsuarioLogado") == "true")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" asp-controller="Cartaz" asp-action="Index">CARTAZES</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link fw-semibold text-white" href="#quem-somos">QUEM SOMOS</a>
                         </li>
@@ -42,16 +49,30 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link fw-semibold text-white" href="#planos">PLANOS</a>
-                        </li>
+                        </li> 
                     </ul>
 
                     <!-- Botões à direita -->
                     <ul class="navbar-nav ms-auto gap-2">
+                        @if (Context.Session.GetString("UsuarioLogado") == "true")
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-white fw-semibold">
+                                    Olá, @Context.Session.GetString("NomeUsuario")
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline fw-semibold px-3" asp-controller="Login" asp-action="Logout">LOGOUT</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline fw-semibold px-5" asp-controller="Login" asp-action="Index">LOGIN</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <a class="btn btn-outline fw-semibold px-5" asp-controller="Login" asp-action="Index">LOGIN</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline fw-semibold px-3" href="#suporte">SUPORTE</a>
+                            <a class="btn btn-outline fw-semibold px-3" href="https://wa.me/18996251546">SUPORTE</a>
                         </li>
                     </ul>
                 </div>

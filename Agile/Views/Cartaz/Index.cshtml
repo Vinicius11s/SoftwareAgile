@@ -4,36 +4,72 @@
     Layout = "_Layout";
     ViewData["Title"] = "Escolher Fundo - vAgile";
 }
-<link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+}
 
-<body class="body bg-black text-light">
-    <div class="container py-5">
-    <div class="col-12 col-md-6 d-flex flex-column align-items-center align-items-md-end">
-        <!-- Card A4 -->
-        <div class="card bg-dark text-light shadow-lg border-0 rounded-4 hover-shadow mb-3"
-             style="cursor:pointer; max-width: 300px;"
-             onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
-            <div class="card-body text-center">
-                <h5 class="card-title fw-bold">Gerar Cartazes A5</h5>
-                <p class="card-text text-secondary">Ideal para impressão em folhas A4 divididas ao centro.</p>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('body_login');
+        });
+    </script>
+}
+
+<section class="container py-5">
+    <div class="row justify-content-center" style="margin-top: -85px; padding-top: 100px;">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <!-- Card A5 -->
+            <div class="card cartaz-card h-100"
+                 style="cursor:pointer;"
+                 onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Gerar Cartazes A5</h5>
+                    <p class="card-text text-secondary">Ideal para impressão em folhas A4 divididas ao centro.</p>
+                </div>
             </div>
         </div>
-
-        <!-- Card Rolo -->
-        <div class="card bg-dark text-light shadow-lg border-0 rounded-4 hover-shadow"
-             style="cursor:pointer; max-width: 300px;"
-             onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
-            <div class="card-body text-center">
-                <h5 class="card-title fw-bold">Gerar Cartazes A4</h5>
-                <p class="card-text text-secondary">Ideal para impressão em folhas A4</p>
+        
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <!-- Card A4 -->
+            <div class="card cartaz-card h-100"
+                 style="cursor:pointer;"
+                 onclick="location.href='@Url.Action("EscolherFundo", "Cartaz")'">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Gerar Cartazes A4</h5>
+                    <p class="card-text text-secondary">Ideal para impressão em folhas A4</p>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Conteúdo principal da página -->
+    <div class="main-content">
+        <!-- Imagem ilustrativa -->
+        <img src="~/images/CartazesEmMaos.png" alt="Mulher feliz em escritorio">
+
+        <!-- Texto ao lado da imagem -->
+        <div class="content-text">
+            <h2>DIFERENTES ARTES E TAMANHOS</h2>
+            <p>Crie centenas de cartazes de oferta em minutos e impulsione suas vendas.</p>
+            <p>Com o software Agile, você transforma dados em resultados, ganhando agilidade para focar no que realmente importa: o crescimento da sua loja.</p>
+
+            <!-- Bloco com métricas da empresa -->
+            <div class="metrics">
+                <div class="metric-item">
+                    <span>+1,000</span>
+                    <p>Possibilidade de Cartazes por Dia!</p>
+                </div>
+                <div class="metric-item">
+                    <span>+99%</span>
+                    <p>Tempo Otimizado.</p>
+                </div>
+            </div>
+        </div>
     </div>
-
-
-
-</body>
+</section>
 
 

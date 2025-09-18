@@ -1,6 +1,13 @@
 ﻿@{
     Layout = "_Layout";
-    ViewData["Title"] = "Gerar Cartazes - vAgile";
+    ViewData["Title"] = "Upload de Dados";
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+}
+
 
     // Determinar imagem do fundo
     string fundoSelecionado = ViewData["FundoSelecionado"]?.ToString() ?? "mercearia";

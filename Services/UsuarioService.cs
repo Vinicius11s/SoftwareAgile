@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs;
+using Domain.Entities;
 using Interfaces.Service;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,11 @@ namespace Services
         public bool ValidarLogin(UsuarioDTO model)
         {
             return repository.ValidarLogin(model);
+        }
+
+        public Usuario? ObterUsuarioPorLogin(UsuarioDTO model)
+        {
+            return repository.ObterUsuarioPorLogin(model);
         }
     }
 }

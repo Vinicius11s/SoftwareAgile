@@ -1,0 +1,137 @@
+/* Fundo responsivo para todas as views */
+body {
+    background: linear-gradient(135deg, #0b0b0b 0%, #000 60%, #1a1a1a 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Fundo responsivo para diferentes telas */
+@media (max-width: 768px) {
+    body {
+        background: linear-gradient(135deg, #0b0b0b 0%, #000 70%, #1a1a1a 100%);
+    }
+}
+
+/* Classe específica para páginas de login/cartaz */
+.body_login {
+    background-image: url('/images/teste.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Fundo com imagem para página inicial */
+.fundo-pagina-inicial {
+    background-image: url('/images/teste.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+/* Cards melhorados para Cartaz */
+.cartaz-card {
+    background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+    border: 1px solid #333;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cartaz-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f5c518, #ffd700, #f5c518);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cartaz-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(245, 197, 24, 0.2);
+    border-color: #f5c518;
+}
+
+.cartaz-card:hover::before {
+    opacity: 1;
+}
+
+.cartaz-card .card-body {
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.cartaz-card .card-title {
+    color: #f5c518;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cartaz-card .card-text {
+    color: #bdbdbd;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Espaçamento melhorado entre seções */
+.cards-section {
+    margin-bottom: 4rem;
+    padding: 2rem 0;
+}
+
+.main-content {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid #333;
+}
+
+/* Responsividade para cards */
+@media (max-width: 768px) {
+    .cartaz-card .card-body {
+        padding: 1.5rem;
+    }
+    
+    .cartaz-card .card-title {
+        font-size: 1.25rem;
+    }
+    
+    .cards-section {
+        margin-bottom: 2rem;
+        padding: 1rem 0;
+    }
+    
+    .main-content {
+        margin-top: 2rem;
+        padding-top: 2rem;
+    }
+}
+
+/* Animações suaves */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cartaz-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.cartaz-card:nth-child(2) {
+    animation-delay: 0.2s;
+}

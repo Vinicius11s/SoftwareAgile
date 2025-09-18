@@ -32,6 +32,16 @@ namespace Agile.Controllers
             // Chama a camada de serviço para validar as credenciais
             if (usuarioService.ValidarLogin(model))
             {
+                // Obter dados completos do usuário
+                var usuario = usuarioService.ObterUsuarioPorLogin(model);
+                if (usuario != null)
+                {
+                    // Armazenar dados do usuário na sessão
+                    HttpContext.Session.SetString("UsuarioLogado", "true");
+                    HttpContext.Session.SetString("NomeUsuario", usuario.Nome);
+                    HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+                }
+
                 // Se o login for bem-sucedido, redireciona para a página inicial
                 return RedirectToAction("Index", "Cartaz");
             }
@@ -41,6 +51,15 @@ namespace Agile.Controllers
                 ModelState.AddModelError(string.Empty, "Usuário ou senha inválidos.");
                 return View("Index", model);
             }
+        }
+
+        public IActionResult Logout()
+        {
+            // Limpar a sessão
+            HttpContext.Session.Clear();
+            
+            // Redirecionar para a página inicial
+            return RedirectToAction("Index", "Agile");
         }
     }
 }

@@ -1,16 +1,23 @@
 ﻿@{
     Layout = "_Layout";
-    ViewData["Title"] = "Agile - Home";
+    ViewData["Title"] = "Home";
 }
-<head>
-    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
-    <title>Agile - Home</title>
-</head>
 
-<body class="d-flex flex-column min-vh-100 text-light body theme-dark">
-    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
-    <!-- A classe do body provavelmente vem do Bootstrap + seu CSS -->
-    <!-- Seção  -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('fundo-pagina-inicial');
+        });
+    </script>
+}
+
+<!-- Seção  -->
     <div class="primary_section">
 
         <!-- Título principal do cabeçalho -->
@@ -47,16 +54,12 @@
                     <span>+99%</span>
                     <p>Tempo Otimizado.</p>
                 </div>
-                <div class="metric-item">
-                    <span>+10</span>
-                    <p>Possibilidade de Artes Diferentes para sua Loja!</p>
-                </div>
             </div>
         </div>
     </div>
 
     <!-- Botão flutuante do WhatsApp -->
-    <a href="https://wa.me/seunumerodecelular" class="whatsapp-btn">
+    <a href="https://wa.me/18996251546" class="whatsapp-btn">
         <!-- Ícone de balão de mensagem (SVG) -->
         <svg xmlns="http://www.w3.org/2000/svg"
              width="24" height="24"
@@ -70,5 +73,3 @@
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
     </a>
-</body>
-</html>

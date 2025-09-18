@@ -8,16 +8,16 @@
     padding-bottom: 1.25rem;
 }
 
-/* Centralizar os links (HOME, QUEM SOMOS, SOLUÇÕES, PLANOS) */
+/* Centralizar os links (HOME, QUEM SOMOS, SOLUï¿½ï¿½ES, PLANOS) */
 .navbar-nav.mx-auto {
     justify-content: center;
-    width: 100%;
+    width: 50%;
 }
 
 /* Links da navbar menores e mais finos */
 .navbar-nav .nav-link {
-    font-size: 0.7rem;
-    font-weight: 300;
+    font-size: 0.75rem;
+    font-weight: 100;
 }
 
 .navbar-nav .nav-link:hover,
@@ -25,13 +25,13 @@
     color: #fff600 !important;
 }
 
-/* Botões LOGIN e SUPORTE */
+/* Botï¿½es LOGIN e SUPORTE */
 .btn-outline {
     border-color: #fff600 !important;
     color: #fff !important;
     font-size: 0.65rem;
     font-weight: 300 !important;
-    padding: 0.10rem 0.3rem; /* menor altura */
+    padding: 0.50rem 0.5rem; /* menor altura */
 }
 
 .btn-outline:hover {
