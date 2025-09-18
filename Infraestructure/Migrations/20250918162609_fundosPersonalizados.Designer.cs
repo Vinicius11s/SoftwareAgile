@@ -4,6 +4,7 @@ using Infraestructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(EmpresaContexto))]
-    partial class EmpresaContextoModelSnapshot : ModelSnapshot
+    [Migration("20250918162609_fundosPersonalizados")]
+    partial class fundosPersonalizados
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,11 +56,6 @@ namespace Infraestructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("TipoImpressao")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
@@ -66,8 +64,6 @@ namespace Infraestructure.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.HasIndex("UsuarioId", "Ativo");
-
-                    b.HasIndex("UsuarioId", "TipoImpressao", "Ativo");
 
                     b.ToTable("FundosPersonalizados", (string)null);
                 });

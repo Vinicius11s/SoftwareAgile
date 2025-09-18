@@ -23,6 +23,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IFundoPersonalizadoRepository, FundoPersonalizadoRepository>();
+builder.Services.AddScoped<IFundoPersonalizadoService, FundoPersonalizadoService>();
 builder.Services.AddDbContext<EmpresaContexto>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();

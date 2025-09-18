@@ -8,11 +8,12 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
 
     @* Espaço para CSS adicional de cada página *@
     @RenderSection("Styles", required: false)
 </head>
-<body class="d-flex flex-column min-vh-100 text-light fundo-pagina-inicial">
+<body class="d-flex flex-column min-vh-100 text-light">
     <!-- Navbar -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm">
@@ -31,50 +32,64 @@
 
                 <!-- Links -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mx-auto gap-lg-4 text-center">
-                        <li class="nav-item">
-                            <a class="nav-link fw-semibold text-white" asp-controller="Agile" asp-action="Index">HOME</a>
-                        </li>
-                        @if (Context.Session.GetString("UsuarioLogado") == "true")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold text-white" asp-controller="Cartaz" asp-action="Index">CARTAZES</a>
-                            </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link fw-semibold text-white" href="#quem-somos">QUEM SOMOS</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link fw-semibold text-white" href="#soluções">SOLUÇÕES</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link fw-semibold text-white" href="#planos">PLANOS</a>
-                        </li> 
-                    </ul>
+                    @{
+                        var usuarioLogado = Context.Session.GetString("UsuarioLogado") == "true";
+                        var nomeUsuario = Context.Session.GetString("NomeUsuario") ?? "Usuário";
+                    }
 
-                    <!-- Botões à direita -->
-                    <ul class="navbar-nav ms-auto gap-2">
-                        @if (Context.Session.GetString("UsuarioLogado") == "true")
-                        {
+                    @if (usuarioLogado)
+                    {
+                        <!-- Menu para usuário logado -->
+                        <ul class="navbar-nav mx-auto gap-lg-4 text-center">
                             <li class="nav-item">
-                                <span class="nav-link text-white fw-semibold">
-                                    Olá, @Context.Session.GetString("NomeUsuario")
-                                </span>
+                                <a class="nav-link fw-semibold text-white" asp-controller="Cartaz" asp-action="Index">GERAR CARTAZES</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" asp-controller="Cartaz" asp-action="UploadCsv">TRATAMENTO CSV</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" href="https://wa.me/18996251546" >SUPORTE</a>
+                            </li>
+                        </ul>
+
+                        <!-- Botões à direita para usuário logado -->
+                        <ul class="navbar-nav ms-auto gap-2">
+                            <li class="nav-item">
+                                <span class="btn btn-outline navbar-text text-white fw-semibold">Olá, @nomeUsuario</span>
                             </li>
                             <li class="nav-item">
                                 <a class="btn btn-outline fw-semibold px-3" asp-controller="Login" asp-action="Logout">LOGOUT</a>
                             </li>
-                        }
-                        else
-                        {
+                        </ul>
+                    }
+                    else
+                    {
+                        <!-- Menu para usuário não logado -->
+                        <ul class="navbar-nav mx-auto gap-lg-4 text-center">
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" asp-controller="Agile" asp-action="Index">HOME</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" href="#quem-somos">QUEM SOMOS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" href="#soluções">SOLUÇÕES</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold text-white" href="#planos">PLANOS</a>
+                            </li> 
+                        </ul>
+
+                        <!-- Botões à direita para usuário não logado -->
+                        <ul class="navbar-nav ms-auto gap-2">
                             <li class="nav-item">
                                 <a class="btn btn-outline fw-semibold px-5" asp-controller="Login" asp-action="Index">LOGIN</a>
                             </li>
-                        }
-                        <li class="nav-item">
-                            <a class="btn btn-outline fw-semibold px-3" href="https://wa.me/18996251546">SUPORTE</a>
-                        </li>
-                    </ul>
+                            <li class="nav-item">
+                                <a class="btn btn-outline fw-semibold px-3" href="https://wa.me/18996251546">SUPORTE</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

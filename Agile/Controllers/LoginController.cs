@@ -43,7 +43,7 @@ namespace Agile.Controllers
                 }
 
                 // Se o login for bem-sucedido, redireciona para a página inicial
-                return RedirectToAction("Index", "Cartaz");
+                return RedirectToAction("Index", "Cartazes");
             }
             else
             {

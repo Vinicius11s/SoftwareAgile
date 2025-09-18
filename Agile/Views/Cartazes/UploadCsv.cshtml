@@ -6,6 +6,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
 }
 
 
@@ -34,7 +35,7 @@
             </div>
 
             <!-- Formulário -->
-            @using (Html.BeginForm("GerarCartazA5", "Cartaz", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+            @using (Html.BeginForm("GerarCartazA5", "Cartazes", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
             {
                 @Html.AntiForgeryToken()
 

@@ -15,7 +15,7 @@
             {
                 <div class="col-md-4 mb-4">
                     <div class="card bg-dark text-light shadow-lg border-0 rounded-4 hover-shadow" style="cursor:pointer;"
-                         onclick="location.href='@Url.Action("UploadCsv", "Cartaz")?fundo=@fundo.Item3'">
+                         onclick="location.href='@Url.Action("UploadCsv", "Cartazes")?fundo=@fundo.Item3&tamanho=@ViewData["TamanhoSelecionado"]'">
                     <img src="@Url.Content(fundo.Item2)" class="card-img-top" alt="@fundo.Item1" style="border-top-left-radius:1rem;border-top-right-radius:1rem;">
                     <div class="card-body text-center">
                             <h5 class="card-title fw-bold text-white">@fundo.Item1</h5>
