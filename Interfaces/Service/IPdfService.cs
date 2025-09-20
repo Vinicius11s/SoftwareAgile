@@ -9,6 +9,7 @@ namespace Interfaces.Service
 {
     public interface IPdfService
     {
-        public byte[] GerarCartazes(List<OfertaDTO> ofertas, byte[]? fundo = null);
+        public byte[] GerarCartazesA5(List<OfertaDTO> ofertas, byte[]? fundo = null);
+        public byte[] GerarCartazesA4(List<OfertaDTO> ofertas, byte[]? fundo = null);
     }
 }

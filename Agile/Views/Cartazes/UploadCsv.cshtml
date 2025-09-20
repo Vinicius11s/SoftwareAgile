@@ -11,8 +11,14 @@
 
 
     // Determinar imagem do fundo
-    string fundoSelecionado = ViewData["FundoSelecionado"]?.ToString() ?? "mercearia";
-    string fundoImagem = fundoSelecionado == "mercearia" ? Url.Content("~/fundos/cartazMercearia.jpeg") : "";
+    string fundoSelecionado = ViewData["FundoSelecionado"]?.ToString() ?? "padrao";
+    string tamanhoSelecionado = ViewData["TamanhoSelecionado"]?.ToString() ?? "A5";
+    string fundoImagem = "";
+    
+    if (fundoSelecionado == "padrao")
+    {
+        fundoImagem = tamanhoSelecionado == "A4" ? Url.Content("~/fundos/fundoPadraoA4.png") : Url.Content("~/fundos/fundoPadraoA5.png");
+    }
 }
 
 <div class="d-flex align-items-center justify-content-center min-vh-100" style="background: linear-gradient(135deg, #0b0b0b 0%, #000 60%);">
@@ -35,7 +41,11 @@
             </div>
 
             <!-- Formulário -->
-            @using (Html.BeginForm("GerarCartazA5", "Cartazes", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+            @{
+                string actionName = tamanhoSelecionado == "A4" ? "GerarCartazA4" : "GerarCartazA5";
+            }
+            
+            @using (Html.BeginForm(actionName, "Cartazes", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
             {
                 @Html.AntiForgeryToken()
 
@@ -51,7 +61,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-warning w-100 py-2 fw-bold shadow-sm">
-                    🚀 Gerar PDF
+                    🚀 Gerar PDF @tamanhoSelecionado
                 </button>
             }
 

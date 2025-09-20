@@ -19,12 +19,8 @@ namespace Infraestructure.Repository
 
         public bool ValidarLogin(UsuarioDTO model)
         {
-            //return contexto.Usuarios.Any(u => u.Login == model.Login && u.Senha == model.Senha);
-            if(model.Login == "admin")
-            {
-                return true;
-            }
-            return false;
+            return contexto.Usuarios.Any(u => u.Login == model.Login && u.Senha == model.Senha);
+
         }
 
         public Usuario? ObterUsuarioPorLogin(UsuarioDTO model)

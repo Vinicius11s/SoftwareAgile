@@ -121,8 +121,11 @@ body {
 
     .main-content img {
         max-width: 400px; /* Limita tamanho da imagem */
+        width: 100%; /* Responsivo */
+        height: auto; /* Mantém proporção */
         border-radius: 10px; /* Bordas arredondadas */
         box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); /* Sombra amarela suave */
+        object-fit: contain; /* Garante que a imagem não seja cortada */
     }
 
 /* Texto ao lado da imagem */

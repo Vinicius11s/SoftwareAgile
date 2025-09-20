@@ -15,25 +15,6 @@ namespace Infraestructure.Repository
             _context = context;
         }
 
-        public async Task<List<FundoPersonalizadoDTO>> ObterFundosPorUsuario(int usuarioId)
-        {
-            return await _context.FundosPersonalizados
-                .Where(f => f.UsuarioId == usuarioId && f.Ativo)
-                .Select(f => new FundoPersonalizadoDTO
-                {
-                    Id = f.Id,
-                    Nome = f.Nome,
-                    CaminhoImagem = f.CaminhoImagem,
-                    NomeArquivo = f.NomeArquivo,
-                    DataUpload = f.DataUpload,
-                    UsuarioId = f.UsuarioId,
-                    TipoImpressao = f.TipoImpressao,
-                    Ativo = f.Ativo
-                })
-                .OrderBy(f => f.Nome)
-                .ToListAsync();
-        }
-
         public async Task<List<FundoPersonalizadoDTO>> ObterFundosPorUsuarioETipo(int usuarioId, string tipoImpressao)
         {
             return await _context.FundosPersonalizados

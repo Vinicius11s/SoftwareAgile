@@ -1,6 +1,7 @@
 using Domain.DTOs;
 using Interfaces.Repository;
 using Interfaces.Service;
+using System.Globalization;
 
 namespace Services
 {
@@ -11,17 +12,6 @@ namespace Services
         public FundoPersonalizadoService(IFundoPersonalizadoRepository repository)
         {
             _repository = repository;
-        }
-
-        public async Task<List<(string Nome, string Imagem, string Id)>> ObterFundosParaView(int usuarioId)
-        {
-            var fundos = await _repository.ObterFundosPorUsuario(usuarioId);
-            
-            return fundos.Select(f => (
-                Nome: f.Nome,
-                Imagem: f.CaminhoImagem,
-                Id: f.Id.ToString()
-            )).ToList();
         }
 
         public async Task<List<(string Nome, string Imagem, string Id)>> ObterFundosParaViewPorTipo(int usuarioId, string tipoImpressao)

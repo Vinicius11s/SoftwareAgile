@@ -29,30 +29,35 @@ namespace Agile.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EscolherFundo(string? tamanho)
+        public async Task<IActionResult> EscolherFundo(string tamanho)
         {
             // Verificar se usuário está logado
             var usuarioId = HttpContext.Session.GetInt32("UsuarioId");
             if (!usuarioId.HasValue)
                 return RedirectToAction("Index", "Login");
 
-            // Carregar fundos personalizados do usuário
-            var fundosPersonalizados = await _fundoService.ObterFundosParaView(usuarioId.Value);
-            
-            // Adicionar fundos padrão se o usuário não tiver fundos personalizados
+            // Passar o tamanho para a view
+            ViewData["TamanhoSelecionado"] = tamanho;
+
+            // Carregar fundos padrão e personalizados do usuário
             var fundos = new List<(string Nome, string Imagem, string Id)>();
             
-            if (fundosPersonalizados.Any())
+           
+            if (tamanho == "A4")
             {
-                fundos.AddRange(fundosPersonalizados);
+                fundos.Add(("Cartaz Padrão", "~/fundos/fundoPadraoA4.png", "padrao"));
+                var fundosPersonalizados = await _fundoService.ObterFundosParaViewPorTipo(usuarioId.Value, tamanho);
             }
             else
             {
-                // Fundos padrão para novos usuários
-                fundos.Add(("Cartaz Padrão", "~/fundos/fundoPadraoA5.png", "padrao"));
-            }
-
-            ViewData["TamanhoSelecionado"] = tamanho ?? "A5"; // padrão se nada for passado
+                if(tamanho == "A5")
+                {
+                    fundos.Add(("Cartaz Padrão", "~/fundos/fundoPadraoA5.png", "padrao"));
+                    var fundosPersonalizados = await _fundoService.ObterFundosParaViewPorTipo(usuarioId.Value, tamanho);
+                }
+                else
+                    return BadRequest("Selecione um Tamanho");               
+            }  
             return View(fundos);
         }
         [HttpGet]
@@ -102,7 +107,7 @@ namespace Agile.Controllers
                 if (ofertas == null || ofertas.Count == 0)
                     return BadRequest("O CSV não contém dados ou o formato está incorreto.");
 
-                var pdfBytes = _pdf.GerarCartazes(ofertas, fundoBytes);
+                var pdfBytes = _pdf.GerarCartazesA5(ofertas, fundoBytes);
 
                 return File(pdfBytes, "application/pdf", "cartazes.pdf");
             }
@@ -155,7 +160,7 @@ namespace Agile.Controllers
                 if (ofertas == null || ofertas.Count == 0)
                     return BadRequest("O CSV não contém dados ou o formato está incorreto.");
 
-                var pdfBytes = _pdf.GerarCartazes(ofertas, fundoBytes);
+                var pdfBytes = _pdf.GerarCartazesA4(ofertas, fundoBytes);
 
                 return File(pdfBytes, "application/pdf", "cartazes.pdf");
             }
