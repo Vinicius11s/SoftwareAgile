@@ -24,6 +24,8 @@ namespace Infraestructure.Context
         public DbSet<Oferta> Ofertas { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<FundoPersonalizado> FundosPersonalizados { get; set; }
+        public DbSet<CorrecaoAprendidaEntity> CorrecoesAprendidas { get; set; }
+        public DbSet<HistoricoCorrecoesEntity> HistoricoCorrecoes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

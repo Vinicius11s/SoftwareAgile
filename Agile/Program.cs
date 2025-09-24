@@ -12,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<Services.CsvServices>();
 builder.Services.AddTransient<Services.PdfServices>();
+builder.Services.AddScoped<Interfaces.Service.ILearningService, Services.DatabaseLearningService>();
 
 // Configurar sessões
 builder.Services.AddSession(options =>

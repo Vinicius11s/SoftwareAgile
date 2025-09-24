@@ -1,0 +1,218 @@
+@model List<Domain.DTOs.CorrecaoAprendida>
+@{
+    ViewData["Title"] = "Correções Aprendidas";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/preview.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="preview-header">
+                <h2>🧠 Correções Aprendidas</h2>
+                <p class="text-center">O sistema aprende com suas correções e as aplica automaticamente em futuros uploads</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Estatísticas -->
+        <div class="col-12 mb-4">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Count</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Count(c => c.TipoCorrecao == "NOME")</span>
+                    <span class="stat-label">Nomes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Count(c => c.TipoCorrecao == "GRAMAGEM")</span>
+                    <span class="stat-label">Gramagens</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.Count(c => c.TipoCorrecao == "VARIEDADE")</span>
+                    <span class="stat-label">Variedades</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="col-12 mb-3">
+            <div class="edit-section">
+                <div class="row">
+                    <div class="col-md-4">
+                        <select id="filtroTipo" class="form-control">
+                            <option value="">Todos os tipos</option>
+                            <option value="NOME">Nomes</option>
+                            <option value="GRAMAGEM">Gramagens</option>
+                            <option value="VARIEDADE">Variedades</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="filtroTexto" class="form-control" placeholder="Buscar por texto...">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-warning" onclick="limparFiltros()">Limpar Filtros</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Correções -->
+        <div class="col-12">
+            <div class="edit-section">
+                <h3>📚 Correções Aprendidas</h3>
+                <div id="listaCorrecoes">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var correcao in Model.OrderByDescending(c => c.FrequenciaUso))
+                        {
+                            <div class="correcao-item" data-tipo="@correcao.TipoCorrecao" data-texto="@correcao.TextoOriginal.ToLower()">
+                                <div class="correcao-header">
+                                    <div class="correcao-info">
+                                        <span class="tipo-badge tipo-@correcao.TipoCorrecao.ToLower()">@correcao.TipoCorrecao</span>
+                                        <span class="frequencia">Usado @correcao.FrequenciaUso vezes</span>
+                                    </div>
+                                    <div class="correcao-actions">
+                                        <button class="btn btn-sm btn-success" onclick="ativarCorrecao(@correcao.Id)" title="Ativar">
+                                            ✅
+                                        </button>
+                                        <button class="btn btn-sm btn-warning" onclick="desativarCorrecao(@correcao.Id)" title="Desativar">
+                                            ⏸️
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="removerCorrecao(@correcao.Id)" title="Remover">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="correcao-content">
+                                    <div class="correcao-original">
+                                        <strong>Original:</strong> <span style="color: red;">@correcao.TextoOriginal</span>
+                                    </div>
+                                    <div class="correcao-corrigida">
+                                        <strong>Corrigido:</strong> <span style="color: green;">@correcao.TextoCorrigido</span>
+                                    </div>
+                                    <div class="correcao-meta">
+                                        <small class="text-muted">
+                                            Criado em: @correcao.DataCriacao.ToString("dd/MM/yyyy HH:mm") | 
+                                            Último uso: @correcao.UltimaUtilizacao.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center p-4">
+                            <h4>Nenhuma correção encontrada</h4>
+                            <p>Faça algumas edições na pré-visualização para ensinar o sistema.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Filtros
+        document.getElementById('filtroTipo').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtroTexto').addEventListener('input', aplicarFiltros);
+
+        function aplicarFiltros() {
+            const filtroTipo = document.getElementById('filtroTipo').value;
+            const filtroTexto = document.getElementById('filtroTexto').value.toLowerCase();
+            const items = document.querySelectorAll('.correcao-item');
+
+            items.forEach(item => {
+                const tipo = item.dataset.tipo;
+                const texto = item.dataset.texto;
+                
+                const matchTipo = !filtroTipo || tipo === filtroTipo;
+                const matchTexto = !filtroTexto || texto.includes(filtroTexto);
+                
+                if (matchTipo && matchTexto) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function limparFiltros() {
+            document.getElementById('filtroTipo').value = '';
+            document.getElementById('filtroTexto').value = '';
+            aplicarFiltros();
+        }
+
+        // Ações de correção
+        function ativarCorrecao(id) {
+            fetch('@Url.Action("AtivarCorrecao")', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}`
+            }).then(() => {
+                showNotification('Correção ativada!', 'success');
+                location.reload();
+            });
+        }
+
+        function desativarCorrecao(id) {
+            fetch('@Url.Action("DesativarCorrecao")', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}`
+            }).then(() => {
+                showNotification('Correção desativada!', 'success');
+                location.reload();
+            });
+        }
+
+        function removerCorrecao(id) {
+            if (confirm('Tem certeza que deseja remover esta correção?')) {
+                fetch('@Url.Action("RemoverCorrecao")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${id}`
+                }).then(() => {
+                    showNotification('Correção removida!', 'success');
+                    location.reload();
+                });
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                color: white;
+                font-weight: bold;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (type === 'success') notification.style.backgroundColor = '#28a745';
+            else if (type === 'error') notification.style.backgroundColor = '#dc3545';
+            else if (type === 'info') notification.style.backgroundColor = '#17a2b8';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+}

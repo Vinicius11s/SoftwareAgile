@@ -29,9 +29,11 @@
 .btn-outline {
     border-color: #fff600 !important;
     color: #fff !important;
-    font-size: 0.65rem;
-    font-weight: 300 !important;
-    padding: 0.50rem 0.5rem; /* menor altura */
+    font-size: 0.75rem;
+    font-weight: 700 !important;
+    padding: 0.80rem 0.5rem; /* menor altura */
+    
+
 }
 
 .btn-outline:hover {

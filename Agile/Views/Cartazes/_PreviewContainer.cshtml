@@ -1,0 +1,70 @@
+@model Domain.DTOs.PreviewData
+
+<div class="preview-container">
+    @for (int i = 0; i < Model.Ofertas.Count; i += 2)
+    {
+        <div class="cartaz-preview">
+            <!-- Oferta Esquerda -->
+            <div class="oferta-item">
+                <div class="oferta-content">
+                    <div class="produto-nome">@Model.Ofertas[i].NomeBase</div>
+                    <div class="produto-detalhes">
+                        @if (!string.IsNullOrEmpty(Model.Ofertas[i].Variedade))
+                        {
+                            <div class="variedade">@Model.Ofertas[i].Variedade</div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Ofertas[i].Gramagem))
+                        {
+                            <div class="gramagem">@Model.Ofertas[i].Gramagem</div>
+                        }
+                    </div>
+                    <div class="produto-preco">
+                        <span class="moeda">R$</span>
+                        <span class="valor">@Model.Ofertas[i].Preco.ToString("N2", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))</span>
+                    </div>
+                    @if (Model.Ofertas[i].IsFamilia)
+                    {
+                        <div class="familia-info">(@Model.Ofertas[i].QuantidadeProdutos sabores)</div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Oferta Direita (se existir) -->
+            @if (i + 1 < Model.Ofertas.Count)
+            {
+                <div class="oferta-item">
+                    <div class="oferta-content">
+                        <div class="produto-nome">@Model.Ofertas[i + 1].NomeBase</div>
+                        <div class="produto-detalhes">
+                            @if (!string.IsNullOrEmpty(Model.Ofertas[i + 1].Variedade))
+                            {
+                                <div class="variedade">@Model.Ofertas[i + 1].Variedade</div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Ofertas[i + 1].Gramagem))
+                            {
+                                <div class="gramagem">@Model.Ofertas[i + 1].Gramagem</div>
+                            }
+                        </div>
+                        <div class="produto-preco">
+                            <span class="moeda">R$</span>
+                            <span class="valor">@Model.Ofertas[i + 1].Preco.ToString("N2", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))</span>
+                        </div>
+                        @if (Model.Ofertas[i + 1].IsFamilia)
+                        {
+                            <div class="familia-info">(@Model.Ofertas[i + 1].QuantidadeProdutos sabores)</div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- Oferta vazia para manter layout -->
+                <div class="oferta-item oferta-vazia">
+                    <div class="oferta-content">
+                        <div class="oferta-vazia-text">Oferta vazia</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

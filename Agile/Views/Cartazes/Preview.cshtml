@@ -1,0 +1,320 @@
+@model Domain.DTOs.PreviewData
+@{
+    ViewData["Title"] = "Pré-visualização dos Cartazes";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/preview.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Header com estatísticas -->
+        <div class="col-12">
+            <div class="preview-header">
+                <h2>📋 Pré-visualização dos Cartazes</h2>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number">@Model.TotalProdutos</span>
+                        <span class="stat-label">Produtos</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">@Model.TotalFamilias</span>
+                        <span class="stat-label">Famílias</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">@Model.TotalCartazes</span>
+                        <span class="stat-label">Cartazes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">@Model.TamanhoSelecionado</span>
+                        <span class="stat-label">Tamanho</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Preview dos Cartazes -->
+        <div class="col-lg-8">
+            <div class="preview-section">
+                <h3>👁️ Visualização dos Cartazes</h3>
+                <div id="preview-container" class="preview-container">
+                    @await Html.PartialAsync("_PreviewContainer", Model)
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel de Edição -->
+        <div class="col-lg-4">
+            <div class="edit-section">
+                <h3>✏️ Editar Ofertas</h3>
+                <form id="editForm" method="post" action="@Url.Action("AtualizarPreview")">
+                    @if (Model.Ofertas.Count == 0)
+                    {
+                        <div class="no-items-message">
+                            <div class="text-center p-4">
+                                <h4>📋 Nenhum item encontrado</h4>
+                                <p class="text-muted">Todos os itens foram excluídos. Faça upload de um novo CSV para continuar.</p>
+                                <a href="@Url.Action("UploadCsv")" class="btn btn-primary">
+                                    📤 Fazer Novo Upload
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        @for (int i = 0; i < Model.Ofertas.Count; i++)
+                    {
+                        <div class="oferta-edit-item" data-index="@i" data-id="@Model.Ofertas[i].Id">
+                            <input type="hidden" name="ofertas[@i].Id" value="@Model.Ofertas[i].Id" />
+                            <input type="hidden" name="ofertas[@i].IsFamilia" value="@Model.Ofertas[i].IsFamilia" />
+                            <input type="hidden" name="ofertas[@i].QuantidadeProdutos" value="@Model.Ofertas[i].QuantidadeProdutos" />
+                            
+                            <div class="oferta-header">
+                                <span class="oferta-index">#@(i + 1)</span>
+                                @if (Model.Ofertas[i].IsFamilia)
+                                {
+                                    <span class="familia-badge">👥 Família (@Model.Ofertas[i].QuantidadeProdutos itens)</span>
+                                }
+                                <button type="button" class="btn-delete" onclick="excluirItem(@Model.Ofertas[i].Id)" title="Excluir item">
+                                    🗑️
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Nome do Produto:</label>
+                                <input type="text" name="ofertas[@i].NomeBase" value="@Model.Ofertas[i].NomeBase" 
+                                       class="form-control" placeholder="Ex: ARROZ ANCÉLI" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Gramagem:</label>
+                                <input type="text" name="ofertas[@i].Gramagem" value="@Model.Ofertas[i].Gramagem" 
+                                       class="form-control" placeholder="Ex: 5KG" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Variedade:</label>
+                                <input type="text" name="ofertas[@i].Variedade" value="@Model.Ofertas[i].Variedade" 
+                                       class="form-control" placeholder="Ex: INTEGRAL" />
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Preço (R$):</label>
+                                <input type="text" name="ofertas[@i].PrecoString" value="@Model.Ofertas[i].Preco.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" 
+                                       class="form-control" placeholder="Ex: 25.99" />
+                            </div>
+                            
+                            @if (Model.Ofertas[i].IsFamilia && Model.Ofertas[i].ProdutosOriginais.Any())
+                            {
+                                <div class="produtos-originais">
+                                    <small class="text-muted">
+                                        <strong>Produtos originais:</strong><br/>
+                                        @string.Join("<br/>", Model.Ofertas[i].ProdutosOriginais.Select(p => $"• {p.DescricaoOriginal}"))
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    }
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="action-buttons">
+                <button type="button" class="btn btn-warning me-2" onclick="atualizarPreview()">
+                    🔄 Atualizar Preview
+                </button>
+                <button type="button" class="btn btn-success me-2" onclick="gerarPdf()">
+                    📄 Gerar PDF Final
+                </button>
+                <a href="@Url.Action("UploadCsv")" class="btn btn-secondary">
+                    ↩️ Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function atualizarPreview() {
+            const form = document.getElementById('editForm');
+            const formData = new FormData(form);
+            
+            // Mostra loading
+            const previewContainer = document.getElementById('preview-container');
+            previewContainer.innerHTML = '<div class="loading">🔄 Atualizando preview...</div>';
+            
+            fetch('@Url.Action("AtualizarPreview")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao atualizar preview');
+                }
+                return response.text();
+            })
+            .then(html => {
+                previewContainer.innerHTML = html;
+                showNotification('Preview atualizado com sucesso!', 'success');
+            })
+            .catch(error => {
+                previewContainer.innerHTML = '<div class="error">❌ Erro ao atualizar preview</div>';
+                showNotification('Erro ao atualizar preview: ' + error.message, 'error');
+            });
+        }
+
+        function gerarPdf() {
+            // Mostra loading
+            showNotification('Gerando PDF...', 'info');
+            
+            // Cria um form temporário para gerar o PDF
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("GerarPdfFinal")';
+            form.style.display = 'none';
+            
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+
+        function excluirItem(itemId) {
+            // Confirma a exclusão
+            if (!confirm('Tem certeza que deseja excluir este item?')) {
+                return;
+            }
+
+            // Mostra loading
+            const previewContainer = document.getElementById('preview-container');
+            previewContainer.innerHTML = '<div class="loading">🗑️ Excluindo item...</div>';
+
+            // Envia requisição para excluir o item
+            fetch('@Url.Action("ExcluirItem")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `itemId=${itemId}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir item');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Atualiza o preview
+                previewContainer.innerHTML = html;
+                
+                // Remove o item do formulário de edição
+                const itemElement = document.querySelector(`[data-id="${itemId}"]`);
+                if (itemElement) {
+                    itemElement.remove();
+                }
+                
+                // Atualiza os índices dos itens restantes
+                atualizarIndices();
+                
+                showNotification('Item excluído com sucesso!', 'success');
+            })
+            .catch(error => {
+                previewContainer.innerHTML = '<div class="error">❌ Erro ao excluir item</div>';
+                showNotification('Erro ao excluir item: ' + error.message, 'error');
+            });
+        }
+
+        function atualizarIndices() {
+            // Atualiza os índices dos itens no formulário
+            const items = document.querySelectorAll('.oferta-edit-item');
+            items.forEach((item, index) => {
+                const indexElement = item.querySelector('.oferta-index');
+                if (indexElement) {
+                    indexElement.textContent = `#${index + 1}`;
+                }
+                
+                // Atualiza os names dos inputs
+                const inputs = item.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    if (input.name) {
+                        input.name = input.name.replace(/ofertas\[\d+\]/, `ofertas[${index}]`);
+                    }
+                });
+            });
+        }
+
+        function showNotification(message, type) {
+            // Cria uma notificação simples
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                color: white;
+                font-weight: bold;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (type === 'success') notification.style.backgroundColor = '#28a745';
+            else if (type === 'error') notification.style.backgroundColor = '#dc3545';
+            else if (type === 'info') notification.style.backgroundColor = '#17a2b8';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Formatação de preços
+        document.addEventListener('input', function(e) {
+            if (e.target.name && e.target.name.includes('PrecoString')) {
+                // Remove caracteres não numéricos exceto ponto e vírgula
+                let value = e.target.value.replace(/[^\d.,]/g, '');
+                
+                // Substitui vírgula por ponto para padronizar
+                value = value.replace(',', '.');
+                
+                // Garante que só há um ponto decimal
+                const parts = value.split('.');
+                if (parts.length > 2) {
+                    value = parts[0] + '.' + parts.slice(1).join('');
+                }
+                
+                // Limita a 2 casas decimais
+                if (parts.length === 2 && parts[1].length > 2) {
+                    value = parts[0] + '.' + parts[1].substring(0, 2);
+                }
+                
+                e.target.value = value;
+            }
+        });
+
+        // Auto-save das alterações (opcional)
+        let autoSaveTimeout;
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('input[type="text"]')) {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    // Auto-atualiza após 2 segundos de inatividade
+                    atualizarPreview();
+                }, 2000);
+            }
+        });
+    </script>
+    
+}

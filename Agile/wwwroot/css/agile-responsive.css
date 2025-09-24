@@ -41,6 +41,7 @@
         flex-direction: column;
         gap: 15px;
         margin-top: 40px;
+        align-items: center;
     }
     
     .btn {
@@ -170,3 +171,4 @@
         margin-bottom: 15px;
     }
 }
+

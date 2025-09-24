@@ -60,9 +60,14 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-warning w-100 py-2 fw-bold shadow-sm">
-                    🚀 Gerar PDF @tamanhoSelecionado
-                </button>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-warning py-2 fw-bold shadow-sm" onclick="previewCartazes()">
+                        👁️ Pré-visualizar
+                    </button>
+                    <button type="submit" class="btn btn-warning py-2 fw-bold shadow-sm">
+                        🚀 Gerar PDF @tamanhoSelecionado
+                    </button>
+                </div>
             }
 
         </div>
@@ -84,4 +89,43 @@
             }, false)
         })
     })()
+
+    function previewCartazes() {
+        const csvFile = document.getElementById('csv').files[0];
+        if (!csvFile) {
+            alert('Por favor, selecione um arquivo CSV primeiro.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('csv', csvFile);
+        formData.append('fundoSelecionado', '@fundoSelecionado');
+        formData.append('tamanhoSelecionado', '@tamanhoSelecionado');
+
+        // Mostrar loading
+        const previewBtn = event.target;
+        const originalText = previewBtn.innerHTML;
+        previewBtn.innerHTML = '⏳ Processando...';
+        previewBtn.disabled = true;
+
+        fetch('@Url.Action("PreviewCartazes", "Cartazes")', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '@Url.Action("Preview", "Cartazes")';
+            } else {
+                throw new Error('Erro ao processar CSV');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao processar o arquivo CSV. Verifique se o formato está correto.');
+        })
+        .finally(() => {
+            previewBtn.innerHTML = originalText;
+            previewBtn.disabled = false;
+        });
+    }
 </script>
