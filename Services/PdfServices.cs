@@ -47,7 +47,7 @@ namespace Services
                             row.RelativeItem().Padding(20).Column(col =>
                             {
                                 // Descrição do produto
-                                col.Item().PaddingTop(270);
+                                col.Item().PaddingTop(240);
                                 col.Item().Height(110) // altura fixa para duas linhas
                                         .AlignCenter()
                                         .Column(descCol =>
@@ -107,13 +107,14 @@ namespace Services
                                 if (oferta2 != null)
                                 {
                                     // Descrição do produto
-                                    col.Item().PaddingTop(270); // mesma altura da esquerda
+                                    col.Item().PaddingTop(240); // mesma altura da esquerda
                                     col.Item().Height(110) // altura fixa para duas linhas
                                         .AlignCenter()
                                         .Column(descCol =>
                                         {
                                             descCol.Item().Text(oferta2.Descricao)
                                                 .FontSize(45)
+                                                .AlignCenter()
                                                 .FontColor("#222222")
                                                 .Bold()
                                                 .LineHeight(1.2f);
@@ -130,18 +131,18 @@ namespace Services
                                         var reais = partes[0];
                                         var centavos = partes.Length > 1 ? partes[1] : "00";
 
-                                        // "R$" fixo com largura reservada
-                                        priceRow.ConstantItem(60).Text("R$").FontSize(40)
+                                        // "R$" fixo com largura reservada para não quebrar
+                                        priceRow.ConstantItem(50).Text("R$").FontSize(35)
                                             .FontColor("#b22222")
                                             .Bold();
 
                                         // Valor em reais (bem grande)
                                         priceRow.AutoItem().AlignBottom().Text(reais)
-                                            .FontSize(132)             // mesmo tamanho da esquerda
+                                            .FontSize(134)
                                             .FontColor("#b22222")
                                             .Bold();
 
-                                        // Centavos + "CADA"
+                                        // Centavos alinhados pelo topo do número de reais
                                         priceRow.AutoItem().Column(cc =>
                                         {
                                             cc.Item().PaddingTop(20).Text("," + centavos)
@@ -149,6 +150,7 @@ namespace Services
                                                 .FontColor("#b22222")
                                                 .Bold();
 
+                                            // Texto "CADA" menor e em maiúsculo
                                             cc.Item().PaddingLeft(20).Text("CADA")
                                                 .FontSize(16)
                                                 .FontColor("#222222")

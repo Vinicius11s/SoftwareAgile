@@ -273,14 +273,39 @@ namespace Agile.Controllers
                 // Recupera dados da session
                 var previewDataJson = HttpContext.Session.GetString("PreviewData");
                 if (string.IsNullOrEmpty(previewDataJson))
+                {
+                    Console.WriteLine("ERRO: Dados de preview não encontrados na sessão");
                     return BadRequest("Dados de preview não encontrados.");
+                }
 
                 var previewData = JsonSerializer.Deserialize<PreviewData>(previewDataJson);
                 if (previewData == null)
+                {
+                    Console.WriteLine("ERRO: Falha ao deserializar dados de preview");
                     return BadRequest("Erro ao recuperar dados de preview.");
+                }
 
                 if (ofertas == null || ofertas.Count == 0)
+                {
+                    Console.WriteLine("ERRO: Nenhuma oferta foi enviada");
                     return BadRequest("Nenhuma oferta foi enviada.");
+                }
+
+                Console.WriteLine($"=== ATUALIZAR PREVIEW ===");
+                Console.WriteLine($"Ofertas recebidas: {ofertas.Count}");
+                Console.WriteLine($"Ofertas na sessão: {previewData.Ofertas.Count}");
+                
+                // Log dos IDs das ofertas recebidas
+                foreach (var o in ofertas)
+                {
+                    Console.WriteLine($"Oferta recebida - ID: {o.Id}, Nome: {o.NomeBase}");
+                }
+                
+                // Log dos IDs das ofertas na sessão
+                foreach (var orig in previewData.Ofertas)
+                {
+                    Console.WriteLine($"Oferta na sessão - ID: {orig.Id}, Nome: {orig.NomeBase}");
+                }
 
                 // Converte OfertaEditModel para ProcessedOferta e registra correções
                 var ofertasProcessadas = new List<ProcessedOferta>();
@@ -292,6 +317,11 @@ namespace Agile.Controllers
                     {
                         // Recupera o item original para comparar
                         var itemOriginal = previewData.Ofertas.FirstOrDefault(orig => orig.Id == o.Id);
+                        
+                        if (itemOriginal == null)
+                        {
+                            Console.WriteLine($"AVISO: Item original não encontrado para ID {o.Id} - Nome: {o.NomeBase}");
+                        }
                         
                         // Registra correções se houver mudanças
                         if (itemOriginal != null && _learningService != null)
@@ -327,7 +357,7 @@ namespace Agile.Controllers
                             Console.WriteLine($"LearningService null ou itemOriginal null. LearningService: {_learningService != null}, ItemOriginal: {itemOriginal != null}");
                         }
 
-                        ofertasProcessadas.Add(new ProcessedOferta
+                        var ofertaProcessada = new ProcessedOferta
                         {
                             Id = o.Id,
                             NomeBase = o.NomeBase ?? string.Empty,
@@ -335,9 +365,13 @@ namespace Agile.Controllers
                             Variedade = o.Variedade ?? string.Empty,
                             Preco = o.Preco,
                             IsFamilia = o.IsFamilia,
-                            QuantidadeProdutos = o.QuantidadeProdutos,
-                            DescricaoFormatada = $"{o.NomeBase}\n{o.Gramagem} {o.Variedade}".Trim()
-                        });
+                            QuantidadeProdutos = o.QuantidadeProdutos
+                        };
+                        
+                        // Gera a descrição formatada usando o método otimizado
+                        ofertaProcessada.DescricaoFormatada = ofertaProcessada.GerarDescricaoParaCartaz();
+                        
+                        ofertasProcessadas.Add(ofertaProcessada);
                     }
                     catch (Exception itemEx)
                     {
@@ -392,9 +426,9 @@ namespace Agile.Controllers
                 byte[] pdfBytes = previewData.TamanhoSelecionado == "A4" 
                     ? _pdf.GerarCartazesA4(ofertas, previewData.FundoBytes)
                     : _pdf.GerarCartazesA5(ofertas, previewData.FundoBytes);
+                // NÃO limpa a session para permitir edições posteriores
 
-                // Limpa a session
-                HttpContext.Session.Remove("PreviewData");
+                // HttpContext.Session.Remove("PreviewData");
 
                 return File(pdfBytes, "application/pdf", "cartazes.pdf");
             }
@@ -441,8 +475,9 @@ namespace Agile.Controllers
         {
             try
             {
-                // Limpa correções inválidas antes de mostrar
+                // Limpa correções inválidas e problemáticas antes de mostrar
                 _learningService.LimparCorrecoesInvalidas();
+                _learningService.LimparCorrecoesProblematicas();
                 
                 var correcoes = _learningService.ObterCorrecoesAprendidas();
                 Console.WriteLine($"Learning Controller: Retornando {correcoes.Count} correções para a view");

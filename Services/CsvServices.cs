@@ -98,12 +98,20 @@ namespace Services
 
         public List<OfertaDTO> ConverterParaOfertaDTO(List<ProcessedOferta> ofertasProcessadas)
         {
-            return ofertasProcessadas.Select(o => new OfertaDTO
+            var ofertas = ofertasProcessadas.Select((o, index) => new OfertaDTO
             {
                 Descricao = o.DescricaoFormatada,
                 Preco = o.Preco,
                 Gramagem = o.Gramagem
             }).ToList();
+            
+            Console.WriteLine($"=== CONVERSÃO PARA OFERTADTO ===");
+            for (int i = 0; i < ofertas.Count; i++)
+            {
+                Console.WriteLine($"Oferta {i}: '{ofertas[i].Descricao}' - R$ {ofertas[i].Preco}");
+            }
+            
+            return ofertas;
         }
     }
 }

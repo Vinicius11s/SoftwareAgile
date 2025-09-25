@@ -18,6 +18,7 @@ namespace Interfaces.Service
         List<HistoricoCorrecoes> ObterHistorico(int limite = 50);
         Dictionary<string, int> ObterEstatisticas();
         public void LimparCorrecoesInvalidas();
+        public void LimparCorrecoesProblematicas();
     }
 }
 

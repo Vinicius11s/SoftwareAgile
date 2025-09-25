@@ -83,8 +83,8 @@ namespace Services
                 }
             }
             
-            // 6. Gerar descrição formatada
-            result.DescricaoFormatada = result.GerarDescricaoFormatada();
+            // 6. Gerar descrição formatada otimizada para cartazes
+            result.DescricaoFormatada = result.GerarDescricaoParaCartaz();
             
             return result;
         }
@@ -112,6 +112,13 @@ namespace Services
 
         public List<ProcessedOferta> GroupByFamily(List<ProcessedOferta> produtos)
         {
+            Console.WriteLine($"=== AGRUPAMENTO POR FAMÍLIA ===");
+            Console.WriteLine($"Produtos recebidos: {produtos.Count}");
+            for (int i = 0; i < produtos.Count; i++)
+            {
+                Console.WriteLine($"Produto {i}: '{produtos[i].NomeBase}' - R$ {produtos[i].Preco}");
+            }
+            
             // Agrupa por "nome base" (sem gramagem e variedade)
             var grupos = produtos
                 .GroupBy(p => p.NomeBase)
@@ -134,6 +141,13 @@ namespace Services
                 }
             }
 
+            Console.WriteLine($"=== RESULTADO FINAL ===");
+            Console.WriteLine($"Produtos finais: {resultado.Count}");
+            for (int i = 0; i < resultado.Count; i++)
+            {
+                Console.WriteLine($"Produto {i}: '{resultado[i].NomeBase}' - R$ {resultado[i].Preco} - IsFamilia: {resultado[i].IsFamilia}");
+            }
+
             return resultado;
         }
 
@@ -151,19 +165,30 @@ namespace Services
                 .OrderByDescending(g => g.Count())
                 .FirstOrDefault()?.Key ?? nomeBase.Gramagem;
             
-            return new ProcessedOferta
+            // Determina se deve mostrar variedades ou não
+            var variedadesUnicas = produtosFamilia.Select(p => p.Variedade).Where(v => !string.IsNullOrEmpty(v)).Distinct().ToList();
+            var variedadeFinal = variedadesUnicas.Count == 1 ? variedadesUnicas.First() : "";
+            
+            var produtoFamilia = new ProcessedOferta
             {
                 Id = Guid.NewGuid().GetHashCode(),
                 NomeBase = nomeBase.NomeBase,
                 Gramagem = gramagemComum,
-                Variedade = "", // Remove variedades específicas
+                Variedade = variedadeFinal, // Preserva variedade se todas forem iguais
                 Preco = precoMedio,
                 DescricaoOriginal = string.Join(" | ", produtosFamilia.Select(p => p.DescricaoOriginal)),
                 IsFamilia = true,
                 ProdutosOriginais = produtosFamilia,
-                QuantidadeProdutos = produtosFamilia.Count,
-                DescricaoFormatada = $"{nomeBase.NomeBase}\n{gramagemComum}"
+                QuantidadeProdutos = produtosFamilia.Count
             };
+            
+            // Gera a descrição formatada usando o método otimizado
+            produtoFamilia.DescricaoFormatada = produtoFamilia.GerarDescricaoParaCartaz();
+            
+            Console.WriteLine($"Família criada: Nome='{produtoFamilia.NomeBase}', Variedade='{produtoFamilia.Variedade}', Gramagem='{produtoFamilia.Gramagem}', Preço={produtoFamilia.Preco}");
+            Console.WriteLine($"Descrição formatada: '{produtoFamilia.DescricaoFormatada}'");
+            
+            return produtoFamilia;
         }
     }
 }

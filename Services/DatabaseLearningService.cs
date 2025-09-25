@@ -31,6 +31,20 @@ namespace Services
                     return;
                 }
 
+                // Validação: não permite correções que cortam texto (corrigido menor que original)
+                if (textoCorrigido.Length < textoOriginal.Length * 0.7) // Se corrigido for 30% menor que original
+                {
+                    Console.WriteLine($"Correção ignorada - texto cortado demais: Original='{textoOriginal}' ({textoOriginal.Length} chars), Corrigido='{textoCorrigido}' ({textoCorrigido.Length} chars)");
+                    return;
+                }
+
+                // Validação: não permite correções que resultam em texto muito curto
+                if (textoCorrigido.Length < 3)
+                {
+                    Console.WriteLine($"Correção ignorada - texto muito curto: Corrigido='{textoCorrigido}' ({textoCorrigido.Length} chars)");
+                    return;
+                }
+
                 // Registra no histórico
                 var historico = new HistoricoCorrecoesEntity
                 {
@@ -330,6 +344,60 @@ namespace Services
         public void LimparCorrecoesInvalidas()
         {
             LimparCorrecoesInvalidasAsync().GetAwaiter().GetResult();
+        }
+
+        public async Task LimparCorrecoesProblematicasAsync()
+        {
+            try
+            {
+                // Remove correções que cortam texto demais
+                var correcoesProblematicas = await _context.CorrecoesAprendidas
+                    .Where(c => c.TextoCorrigido.Length < c.TextoOriginal.Length * 0.7)
+                    .ToListAsync();
+
+                if (correcoesProblematicas.Any())
+                {
+                    Console.WriteLine($"Removendo {correcoesProblematicas.Count} correções problemáticas (texto cortado demais)");
+                    _context.CorrecoesAprendidas.RemoveRange(correcoesProblematicas);
+                }
+
+                // Remove correções com texto muito curto
+                var correcoesMuitoCurta = await _context.CorrecoesAprendidas
+                    .Where(c => c.TextoCorrigido.Length < 3)
+                    .ToListAsync();
+
+                if (correcoesMuitoCurta.Any())
+                {
+                    Console.WriteLine($"Removendo {correcoesMuitoCurta.Count} correções com texto muito curto");
+                    _context.CorrecoesAprendidas.RemoveRange(correcoesMuitoCurta);
+                }
+
+                // Remove correções que terminam com espaço (indicam corte)
+                var correcoesComEspaco = await _context.CorrecoesAprendidas
+                    .Where(c => c.TextoCorrigido.EndsWith(" "))
+                    .ToListAsync();
+
+                if (correcoesComEspaco.Any())
+                {
+                    Console.WriteLine($"Removendo {correcoesComEspaco.Count} correções que terminam com espaço");
+                    _context.CorrecoesAprendidas.RemoveRange(correcoesComEspaco);
+                }
+
+                if (correcoesProblematicas.Any() || correcoesMuitoCurta.Any() || correcoesComEspaco.Any())
+                {
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine("Correções problemáticas removidas com sucesso!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao limpar correções problemáticas: {ex.Message}");
+            }
+        }
+
+        public void LimparCorrecoesProblematicas()
+        {
+            LimparCorrecoesProblematicasAsync().GetAwaiter().GetResult();
         }
     }
 }
