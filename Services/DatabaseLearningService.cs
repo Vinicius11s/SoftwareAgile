@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
+using System.Text;
 using Domain.DTOs;
 using Domain.Entities;
 using Infraestructure.Context;
@@ -24,24 +26,24 @@ namespace Services
             try
             {
                 // Validação: não permite registrar correções com valores vazios
-                if (string.IsNullOrWhiteSpace(textoOriginal) || string.IsNullOrWhiteSpace(textoCorrigido) || 
-                    string.IsNullOrWhiteSpace(tipoCorrecao) || textoOriginal == textoCorrigido)
+                if (string.IsNullOrWhiteSpace(tipoCorrecao) || textoOriginal == textoCorrigido)
                 {
                     Console.WriteLine($"Correção ignorada - valores inválidos: Original='{textoOriginal}', Corrigido='{textoCorrigido}', Tipo='{tipoCorrecao}'");
                     return;
                 }
-
-                // Validação: não permite correções que cortam texto (corrigido menor que original)
-                if (textoCorrigido.Length < textoOriginal.Length * 0.7) // Se corrigido for 30% menor que original
+                
+                // Permite correções mesmo com texto original vazio (para casos de remoção)
+                if (string.IsNullOrWhiteSpace(textoOriginal))
                 {
-                    Console.WriteLine($"Correção ignorada - texto cortado demais: Original='{textoOriginal}' ({textoOriginal.Length} chars), Corrigido='{textoCorrigido}' ({textoCorrigido.Length} chars)");
+                    Console.WriteLine($"Correção ignorada - texto original vazio: Original='{textoOriginal}', Corrigido='{textoCorrigido}'");
                     return;
                 }
 
-                // Validação: não permite correções que resultam em texto muito curto
-                if (textoCorrigido.Length < 3)
+                // Validações mais permissivas para permitir limpezas/encurtamentos legítimos
+                // Bloqueia apenas correções extremamente curtas (≤ 1 char)
+                if (textoCorrigido.Trim().Length <= 1)
                 {
-                    Console.WriteLine($"Correção ignorada - texto muito curto: Corrigido='{textoCorrigido}' ({textoCorrigido.Length} chars)");
+                    Console.WriteLine($"Correção ignorada - texto muito curto: Corrigido='{textoCorrigido}' ({textoCorrigido?.Length ?? 0} chars)");
                     return;
                 }
 
@@ -113,7 +115,13 @@ namespace Services
         {
             try
             {
-                Console.WriteLine($"DatabaseLearningService.RegistrarCorrecao chamado: '{textoOriginal}' -> '{textoCorrigido}' (Tipo: {tipoCorrecao})");
+                Console.WriteLine($"=== REGISTRAR CORREÇÃO ===");
+                Console.WriteLine($"Original: '{textoOriginal}' (Length: {textoOriginal?.Length ?? 0})");
+                Console.WriteLine($"Corrigido: '{textoCorrigido}' (Length: {textoCorrigido?.Length ?? 0})");
+                Console.WriteLine($"Tipo: {tipoCorrecao}");
+                Console.WriteLine($"Sessão: {sessaoId}");
+                Console.WriteLine($"São iguais? {textoOriginal == textoCorrigido}");
+                
                 RegistrarCorrecaoAsync(textoOriginal, textoCorrigido, tipoCorrecao, sessaoId).GetAwaiter().GetResult();
                 Console.WriteLine($"Correção registrada com sucesso!");
             }
@@ -127,33 +135,122 @@ namespace Services
         public async Task<string> AplicarCorrecoesAprendidasAsync(string texto, string tipoCorrecao, string usuarioId = null, string empresaId = null)
         {
             if (string.IsNullOrEmpty(texto))
+            {
+                Console.WriteLine($"AplicarCorrecoesAprendidasAsync: Texto vazio para tipo '{tipoCorrecao}'");
                 return texto;
+            }
 
-            var correcao = await _context.CorrecoesAprendidas
+            Console.WriteLine($"AplicarCorrecoesAprendidasAsync: Buscando correção para '{texto}' (Tipo: {tipoCorrecao}, UsuarioId: {usuarioId}, EmpresaId: {empresaId})");
+            
+            // Busca correção direta (texto original -> texto corrigido)
+            var correcaoDireta = await _context.CorrecoesAprendidas
                 .Where(c => c.Ativo && c.TipoCorrecao == tipoCorrecao)
                 .Where(c => c.UsuarioId == (usuarioId ?? "ANONIMO") && c.EmpresaId == (empresaId ?? "DEFAULT"))
                 .Where(c => c.TextoOriginal.ToLower() == texto.ToLower())
+                .OrderByDescending(c => c.DataAtualizacao)
                 .FirstOrDefaultAsync();
-
-            if (correcao != null)
+                
+            Console.WriteLine($"Query executada - Encontrou {(correcaoDireta != null ? 1 : 0)} correção(s)");
+            
+            if (correcaoDireta != null)
             {
+                Console.WriteLine($"CORREÇÃO DIRETA ENCONTRADA: '{correcaoDireta.TextoOriginal}' -> '{correcaoDireta.TextoCorrigido}' (Freq: {correcaoDireta.FrequenciaUso})");
+                
                 // Atualiza frequência de uso
-                correcao.FrequenciaUso++;
-                correcao.UltimaUtilizacao = DateTime.Now;
-                correcao.DataAtualizacao = DateTime.Now;
+                correcaoDireta.FrequenciaUso++;
+                correcaoDireta.UltimaUtilizacao = DateTime.Now;
+                correcaoDireta.DataAtualizacao = DateTime.Now;
                 await _context.SaveChangesAsync();
                 
-                return correcao.TextoCorrigido;
+                return correcaoDireta.TextoCorrigido;
+            }
+            
+            // Segunda tentativa: match ignorando acentos e caixa
+            var candidatos = await _context.CorrecoesAprendidas
+                .Where(c => c.Ativo && c.TipoCorrecao == tipoCorrecao)
+                .Where(c => c.UsuarioId == (usuarioId ?? "ANONIMO") && c.EmpresaId == (empresaId ?? "DEFAULT"))
+                .OrderByDescending(c => c.DataAtualizacao)
+                .ToListAsync();
+
+            var textoNormalizado = NormalizeText(texto);
+            Console.WriteLine($"Texto normalizado: '{texto}' -> '{textoNormalizado}'");
+            
+            foreach (var candidato in candidatos)
+            {
+                var candidatoNormalizado = NormalizeText(candidato.TextoOriginal);
+                Console.WriteLine($"Candidato: '{candidato.TextoOriginal}' -> '{candidatoNormalizado}'");
+                if (candidatoNormalizado == textoNormalizado)
+                {
+                    Console.WriteLine($"CORREÇÃO (NORMALIZADA) ENCONTRADA: '{candidato.TextoOriginal}' -> '{candidato.TextoCorrigido}'");
+                    candidato.FrequenciaUso++;
+                    candidato.UltimaUtilizacao = DateTime.Now;
+                    candidato.DataAtualizacao = DateTime.Now;
+                    await _context.SaveChangesAsync();
+                    return candidato.TextoCorrigido;
+                }
             }
 
+            // Terceira tentativa: substituição por token (palavra inteira), diacrítico-insensível
+            // Ex.: REFR -> REFRESCO, LV -> LONGA VIDA
+            var tokens = texto.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+            bool alterado = false;
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var tokenNorm = NormalizeText(tokens[i]);
+                var candidatoToken = candidatos.FirstOrDefault(c => NormalizeText(c.TextoOriginal) == tokenNorm);
+                if (candidatoToken != null)
+                {
+                    Console.WriteLine($"SUBSTITUIÇÃO POR TOKEN: '{tokens[i]}' -> '{candidatoToken.TextoCorrigido}'");
+                    tokens[i] = candidatoToken.TextoCorrigido;
+                    candidatoToken.FrequenciaUso++;
+                    candidatoToken.UltimaUtilizacao = DateTime.Now;
+                    candidatoToken.DataAtualizacao = DateTime.Now;
+                    alterado = true;
+                }
+            }
+            if (alterado)
+            {
+                await _context.SaveChangesAsync();
+                var textoSubstituido = string.Join(" ", tokens).Trim();
+                return textoSubstituido;
+            }
+
+            // Se não encontrou correção direta, busca correção em cadeia
+            // Exemplo: Se temos "COLA" -> "LATA" e "LATA" -> "ORIGINAL", 
+            // quando o sistema extrair "COLA", deve retornar "ORIGINAL"
+            var correcaoEmCadeia = await BuscarCorrecaoEmCadeiaAsync(texto, tipoCorrecao, usuarioId, empresaId);
+            if (correcaoEmCadeia != null)
+            {
+                Console.WriteLine($"CORREÇÃO EM CADEIA ENCONTRADA: '{texto}' -> '{correcaoEmCadeia}'");
+                return correcaoEmCadeia;
+            }
+            
+            Console.WriteLine($"NENHUMA CORREÇÃO ENCONTRADA para '{texto}' (Tipo: {tipoCorrecao})");
             return texto;
         }
 
-        public string AplicarCorrecoesAprendidas(string texto, string tipoCorrecao)
+        private static string NormalizeText(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+            var formD = input.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+            foreach (var ch in formD)
+            {
+                var uc = CharUnicodeInfo.GetUnicodeCategory(ch);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                    sb.Append(ch);
+            }
+            var noDiacritics = sb.ToString().Normalize(NormalizationForm.FormC);
+            // Normaliza espaços e caixa
+            var collapsed = string.Join(" ", noDiacritics.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+            return collapsed.ToUpperInvariant().Trim();
+        }
+
+        public string AplicarCorrecoesAprendidas(string texto, string tipoCorrecao, string usuarioId = null, string empresaId = null)
         {
             try
             {
-                return AplicarCorrecoesAprendidasAsync(texto, tipoCorrecao).GetAwaiter().GetResult();
+                return AplicarCorrecoesAprendidasAsync(texto, tipoCorrecao, usuarioId, empresaId).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -213,6 +310,121 @@ namespace Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Erro ao obter correções: {ex.Message}");
+                return new List<CorrecaoAprendida>();
+            }
+        }
+
+        public List<CorrecaoAprendida> ObterTodasCorrecoesAprendidas(string tipoCorrecao = null, string usuarioId = null, string empresaId = null)
+        {
+            try
+            {
+                var resultado = ObterTodasCorrecoesAprendidasAsync(tipoCorrecao, usuarioId, empresaId).GetAwaiter().GetResult();
+                Console.WriteLine($"ObterTodasCorrecoesAprendidas retornou {resultado.Count} correções");
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao obter todas as correções: {ex.Message}");
+                return new List<CorrecaoAprendida>();
+            }
+        }
+
+        public async Task<List<CorrecaoAprendida>> ObterTodasCorrecoesAprendidasAsync(string tipoCorrecao = null, string usuarioId = null, string empresaId = null)
+        {
+            try
+            {
+                Console.WriteLine($"ObterTodasCorrecoesAprendidasAsync chamado com tipoCorrecao: {tipoCorrecao}, usuarioId: {usuarioId}, empresaId: {empresaId}");
+
+                var query = _context.CorrecoesAprendidas
+                    .Where(c => c.UsuarioId == (usuarioId ?? "ANONIMO") && c.EmpresaId == (empresaId ?? "DEFAULT"));
+
+                // Não filtrar por Ativo = true (inclui desativadas)
+                if (!string.IsNullOrEmpty(tipoCorrecao))
+                    query = query.Where(c => c.TipoCorrecao == tipoCorrecao);
+
+                var correcoes = await query
+                    .OrderByDescending(c => c.FrequenciaUso)
+                    .ToListAsync();
+
+                Console.WriteLine($"Query retornou {correcoes.Count} correções do banco (incluindo desativadas) para usuário {usuarioId ?? "ANONIMO"}");
+                
+                // Log detalhado das correções
+                foreach (var c in correcoes.Take(5)) // Log das primeiras 5
+                {
+                    Console.WriteLine($"Correção: ID={c.Id}, Original='{c.TextoOriginal}', Corrigido='{c.TextoCorrigido}', Ativo={c.Ativo}, UsuarioId='{c.UsuarioId}', EmpresaId='{c.EmpresaId}'");
+                }
+
+                var resultado = correcoes.Select(c => new CorrecaoAprendida
+                {
+                    Id = c.Id,
+                    TextoOriginal = c.TextoOriginal,
+                    TextoCorrigido = c.TextoCorrigido,
+                    TipoCorrecao = c.TipoCorrecao,
+                    FrequenciaUso = c.FrequenciaUso,
+                    DataCriacao = c.DataCriacao,
+                    UltimaUtilizacao = c.UltimaUtilizacao,
+                    Ativo = c.Ativo,
+                    UsuarioId = c.UsuarioId
+                }).ToList();
+
+                Console.WriteLine($"Convertido para {resultado.Count} DTOs");
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no ObterTodasCorrecoesAprendidasAsync: {ex.Message}");
+                return new List<CorrecaoAprendida>();
+            }
+        }
+
+        public List<CorrecaoAprendida> ObterCorrecoesDesativadas(string tipoCorrecao = null, string usuarioId = null, string empresaId = null)
+        {
+            return ObterCorrecoesDesativadasAsync(tipoCorrecao, usuarioId, empresaId).GetAwaiter().GetResult();
+        }
+
+        public async Task<List<CorrecaoAprendida>> ObterCorrecoesDesativadasAsync(string tipoCorrecao = null, string usuarioId = null, string empresaId = null)
+        {
+            try
+            {
+                Console.WriteLine($"ObterCorrecoesDesativadasAsync chamado com tipoCorrecao: {tipoCorrecao}, usuarioId: {usuarioId}, empresaId: {empresaId}");
+
+                var query = _context.CorrecoesAprendidas
+                    .Where(c => c.Ativo == false && c.UsuarioId == (usuarioId ?? "ANONIMO") && c.EmpresaId == (empresaId ?? "DEFAULT"));
+
+                if (!string.IsNullOrEmpty(tipoCorrecao))
+                    query = query.Where(c => c.TipoCorrecao == tipoCorrecao);
+
+                var correcoes = await query
+                    .OrderByDescending(c => c.DataAtualizacao)
+                    .ToListAsync();
+
+                Console.WriteLine($"Query retornou {correcoes.Count} correções DESATIVADAS do banco para usuário {usuarioId ?? "ANONIMO"}");
+                
+                // Log detalhado das correções
+                foreach (var c in correcoes.Take(5)) // Log das primeiras 5
+                {
+                    Console.WriteLine($"Correção DESATIVADA: ID={c.Id}, Original='{c.TextoOriginal}', Corrigido='{c.TextoCorrigido}', Ativo={c.Ativo}, UsuarioId='{c.UsuarioId}', EmpresaId='{c.EmpresaId}'");
+                }
+
+                var resultado = correcoes.Select(c => new CorrecaoAprendida
+                {
+                    Id = c.Id,
+                    TextoOriginal = c.TextoOriginal,
+                    TextoCorrigido = c.TextoCorrigido,
+                    TipoCorrecao = c.TipoCorrecao,
+                    FrequenciaUso = c.FrequenciaUso,
+                    DataCriacao = c.DataCriacao,
+                    UltimaUtilizacao = c.UltimaUtilizacao,
+                    Ativo = c.Ativo,
+                    UsuarioId = c.UsuarioId
+                }).ToList();
+
+                Console.WriteLine($"Convertido para {resultado.Count} DTOs DESATIVADAS");
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no ObterCorrecoesDesativadasAsync: {ex.Message}");
                 return new List<CorrecaoAprendida>();
             }
         }
@@ -350,9 +562,9 @@ namespace Services
         {
             try
             {
-                // Remove correções que cortam texto demais
+                // Regra mais permissiva: só marca como problemática se o texto ficou praticamente vazio
                 var correcoesProblematicas = await _context.CorrecoesAprendidas
-                    .Where(c => c.TextoCorrigido.Length < c.TextoOriginal.Length * 0.7)
+                    .Where(c => c.TextoCorrigido.Trim().Length <= 1)
                     .ToListAsync();
 
                 if (correcoesProblematicas.Any())
@@ -361,9 +573,9 @@ namespace Services
                     _context.CorrecoesAprendidas.RemoveRange(correcoesProblematicas);
                 }
 
-                // Remove correções com texto muito curto
+                // Mantém apenas o filtro mínimo absoluto
                 var correcoesMuitoCurta = await _context.CorrecoesAprendidas
-                    .Where(c => c.TextoCorrigido.Length < 3)
+                    .Where(c => c.TextoCorrigido.Trim().Length <= 1)
                     .ToListAsync();
 
                 if (correcoesMuitoCurta.Any())
@@ -398,6 +610,125 @@ namespace Services
         public void LimparCorrecoesProblematicas()
         {
             LimparCorrecoesProblematicasAsync().GetAwaiter().GetResult();
+        }
+
+        private async Task<string> BuscarCorrecaoEmCadeiaAsync(string textoInicial, string tipoCorrecao, string usuarioId, string empresaId)
+        {
+            var textoAtual = textoInicial;
+            var textosVisitados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var maxIteracoes = 10; // Evita loops infinitos
+            var iteracao = 0;
+
+            while (iteracao < maxIteracoes)
+            {
+                if (textosVisitados.Contains(textoAtual))
+                {
+                    Console.WriteLine($"LOOP DETECTADO na correção em cadeia para '{textoInicial}'");
+                    break;
+                }
+
+                textosVisitados.Add(textoAtual);
+
+                var proximaCorrecao = await _context.CorrecoesAprendidas
+                    .Where(c => c.Ativo && c.TipoCorrecao == tipoCorrecao)
+                    .Where(c => c.UsuarioId == (usuarioId ?? "ANONIMO") && c.EmpresaId == (empresaId ?? "DEFAULT"))
+                    .Where(c => c.TextoOriginal.ToLower() == textoAtual.ToLower())
+                    .OrderByDescending(c => c.DataAtualizacao)
+                    .FirstOrDefaultAsync();
+
+                if (proximaCorrecao == null)
+                {
+                    break; // Não há mais correções na cadeia
+                }
+
+                Console.WriteLine($"CADEIA: '{textoAtual}' -> '{proximaCorrecao.TextoCorrigido}'");
+                textoAtual = proximaCorrecao.TextoCorrigido;
+                iteracao++;
+            }
+
+            // Se encontrou uma correção diferente do texto inicial, retorna
+            if (textoAtual != textoInicial)
+            {
+                return textoAtual;
+            }
+
+            return null;
+        }
+
+        public async Task DebugCorrecoesVariedadeAsync()
+        {
+            try
+            {
+                Console.WriteLine("=== DEBUG CORREÇÕES VARIEDADE ===");
+                
+                var correcoesVariedade = await _context.CorrecoesAprendidas
+                    .Where(c => c.TipoCorrecao == "VARIEDADE")
+                    .ToListAsync();
+                
+                Console.WriteLine($"Total de correções de variedade: {correcoesVariedade.Count}");
+                
+                foreach (var correcao in correcoesVariedade)
+                {
+                    Console.WriteLine($"ID: {correcao.Id}, Original: '{correcao.TextoOriginal}', Corrigido: '{correcao.TextoCorrigido}', Ativo: {correcao.Ativo}, Freq: {correcao.FrequenciaUso}");
+                }
+                
+                var historicoVariedade = await _context.HistoricoCorrecoes
+                    .Where(h => h.TipoCorrecao == "VARIEDADE")
+                    .OrderByDescending(h => h.DataCorrecao)
+                    .Take(10)
+                    .ToListAsync();
+                
+                Console.WriteLine($"Últimas 10 correções de variedade no histórico:");
+                foreach (var hist in historicoVariedade)
+                {
+                    Console.WriteLine($"Data: {hist.DataCorrecao}, Original: '{hist.TextoOriginal}', Corrigido: '{hist.TextoCorrigido}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no debug: {ex.Message}");
+            }
+        }
+
+        public async Task DebugCorrecoesNomesAsync(string usuarioId = null, string empresaId = null)
+        {
+            try
+            {
+                Console.WriteLine("=== DEBUG CORREÇÕES NOMES ===");
+                Console.WriteLine($"UsuarioId: {usuarioId}, EmpresaId: {empresaId}");
+                
+                var correcoesNomes = await _context.CorrecoesAprendidas
+                    .Where(c => c.TipoCorrecao == "NOME")
+                    .Where(c => c.UsuarioId == (usuarioId ?? "ANONIMO") && c.EmpresaId == (empresaId ?? "DEFAULT"))
+                    .ToListAsync();
+                
+                Console.WriteLine($"Total de correções de nomes para este usuário: {correcoesNomes.Count}");
+                
+                foreach (var correcao in correcoesNomes)
+                {
+                    Console.WriteLine($"ID: {correcao.Id}, Original: '{correcao.TextoOriginal}', Corrigido: '{correcao.TextoCorrigido}', Ativo: {correcao.Ativo}, UsuarioId: '{correcao.UsuarioId}', EmpresaId: '{correcao.EmpresaId}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no debug de nomes: {ex.Message}");
+            }
+        }
+
+        public async Task TestarCorrecaoAsync(string texto, string tipoCorrecao, string usuarioId = null, string empresaId = null)
+        {
+            try
+            {
+                Console.WriteLine($"=== TESTE DE CORREÇÃO ===");
+                Console.WriteLine($"Texto: '{texto}', Tipo: {tipoCorrecao}, UsuarioId: {usuarioId}, EmpresaId: {empresaId}");
+                
+                var resultado = await AplicarCorrecoesAprendidasAsync(texto, tipoCorrecao, usuarioId, empresaId);
+                Console.WriteLine($"Resultado: '{resultado}'");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro no teste: {ex.Message}");
+            }
         }
     }
 }

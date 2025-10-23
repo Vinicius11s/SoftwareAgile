@@ -1,0 +1,188 @@
+/* Fundo da página UploadCsv */
+body {
+    background-image: url('/images/teste.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+}
+
+/* Overlay escuro para melhor legibilidade */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%);
+    z-index: -1;
+}
+
+/* Forçar o fundo no container principal */
+.d-flex.align-items-center.justify-content-center {
+    background-image: url('/images/teste.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+    position: relative;
+}
+
+.d-flex.align-items-center.justify-content-center::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%);
+    z-index: 0;
+}
+
+/* Container principal - subido um pouco */
+.upload-container {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    border: 1px solid rgba(245, 197, 24, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(245, 197, 24, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    margin-top: -50px; /* Subindo o container */
+    z-index: 10; /* Ficar acima do overlay */
+}
+
+.upload-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f5c518, #ffd700, #f5c518, transparent);
+    opacity: 0.8;
+}
+
+/* Título */
+.upload-title {
+    color: #f5c518;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
+    margin-bottom: 1rem;
+}
+
+.upload-subtitle {
+    color: #e0e0e0;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* Preview do fundo */
+.fundo-preview {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid rgba(245, 197, 24, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.fundo-preview img {
+    border: 2px solid rgba(245, 197, 24, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.fundo-preview img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 35px rgba(245, 197, 24, 0.2);
+}
+
+/* Formulário */
+.form-control {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid rgba(245, 197, 24, 0.3);
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: linear-gradient(135deg, #1f1f1f 0%, #333 100%);
+    border-color: #f5c518;
+    box-shadow: 0 0 0 0.2rem rgba(245, 197, 24, 0.25);
+    color: #fff;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+/* Botões */
+.btn-outline-warning {
+    background: transparent;
+    border: 2px solid #f5c518;
+    color: #f5c518;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-outline-warning:hover {
+    background: linear-gradient(135deg, #f5c518, #ffd700);
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 197, 24, 0.3);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f5c518, #ffd700);
+    border: none;
+    color: #000;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #ffd700, #f5c518);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 197, 24, 0.4);
+}
+
+/* Labels */
+.form-label {
+    color: #f5c518;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* Texto de ajuda */
+.form-text {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .upload-title {
+        font-size: 2rem;
+    }
+    
+    .upload-container {
+        margin: 1rem;
+        border-radius: 15px;
+        margin-top: -30px; /* Menos negativo no mobile */
+    }
+}

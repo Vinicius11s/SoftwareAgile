@@ -18,8 +18,8 @@ namespace Services
         private static readonly Regex GramagemRegex = new Regex(@"\b(\d+(?:,\d+)?)\s*(KG|G|L|ML|UN|PCT|CX|DZ|PCT|UND|UNID)\b", 
             RegexOptions.IgnoreCase);
         
-        // Regex para identificar tipos/variedades
-        private static readonly Regex TipoRegex = new Regex(@"\b(INTEGRAL|DESNATADO|SEMIDESNATADO|T1|T2|T3|TIPO\s*\d+|LARANJA|MARACUJA|UVA|MORANGO|COLA|GUARANA|LIMAO|LIMA|ABACAXI|PESSEGO|MACA|BANANA|CEREJA|FRAMBOESA|MENTA|HORTELA|CITRICO|CITRUS)\b", 
+        // Regex para identificar tipos/variedades (inclui LATA, ORIGINAL, ZERO, DIET, LIGHT)
+        private static readonly Regex TipoRegex = new Regex(@"\b(INTEGRAL|DESNATADO|SEMIDESNATADO|T1|T2|T3|TIPO\s*\d+|LARANJA|MARACUJA|UVA|MORANGO|COLA|GUARANA|LIMAO|LIMA|ABACAXI|PESSEGO|MACA|BANANA|CEREJA|FRAMBOESA|MENTA|HORTELA|CITRICO|CITRUS|LATA|ORIGINAL|ZERO|DIET|LIGHT)\b", 
             RegexOptions.IgnoreCase);
 
         // Dicionário de correção de acentuação
@@ -36,8 +36,11 @@ namespace Services
             _learningService = learningService;
         }
 
-        public ProcessedOferta ProcessDescription(string descricao, decimal preco)
+        public ProcessedOferta ProcessDescription(string descricao, decimal preco, string usuarioId = null, string empresaId = null)
         {
+            Console.WriteLine($"ProductDescriptionProcessor.ProcessDescription: '{descricao}' (UsuarioId: {usuarioId}, EmpresaId: {empresaId})");
+            Console.WriteLine($"LearningService disponível: {_learningService != null}");
+            
             var result = new ProcessedOferta
             {
                 DescricaoOriginal = descricao,
@@ -61,6 +64,7 @@ namespace Services
             if (tipoMatch.Success)
             {
                 result.Variedade = tipoMatch.Value.ToUpper();
+                Console.WriteLine($"EXTRAÇÃO VARIEDADE: '{tipoMatch.Value.ToUpper()}' extraído de '{descricaoCorrigida}'");
                 descricaoCorrigida = TipoRegex.Replace(descricaoCorrigida, "").Trim();
             }
             
@@ -72,9 +76,21 @@ namespace Services
             {
                 try
                 {
-                    result.NomeBase = _learningService.AplicarCorrecoesAprendidas(result.NomeBase, "NOME");
-                    result.Gramagem = _learningService.AplicarCorrecoesAprendidas(result.Gramagem, "GRAMAGEM");
-                    result.Variedade = _learningService.AplicarCorrecoesAprendidas(result.Variedade, "VARIEDADE");
+                    var nomeAntes = result.NomeBase;
+                    var gramagemAntes = result.Gramagem;
+                    var variedadeAntes = result.Variedade;
+                    
+                    result.NomeBase = _learningService.AplicarCorrecoesAprendidas(result.NomeBase, "NOME", usuarioId, empresaId);
+                    result.Gramagem = _learningService.AplicarCorrecoesAprendidas(result.Gramagem, "GRAMAGEM", usuarioId, empresaId);
+                    result.Variedade = _learningService.AplicarCorrecoesAprendidas(result.Variedade, "VARIEDADE", usuarioId, empresaId);
+                    
+                    // Debug das correções aplicadas
+                    if (nomeAntes != result.NomeBase)
+                        Console.WriteLine($"CORREÇÃO NOME APLICADA: '{nomeAntes}' -> '{result.NomeBase}' (UsuarioId: {usuarioId}, EmpresaId: {empresaId})");
+                    if (gramagemAntes != result.Gramagem)
+                        Console.WriteLine($"CORREÇÃO GRAMAGEM APLICADA: '{gramagemAntes}' -> '{result.Gramagem}' (UsuarioId: {usuarioId}, EmpresaId: {empresaId})");
+                    if (variedadeAntes != result.Variedade)
+                        Console.WriteLine($"CORREÇÃO VARIEDADE APLICADA: '{variedadeAntes}' -> '{result.Variedade}' (UsuarioId: {usuarioId}, EmpresaId: {empresaId})");
                 }
                 catch (Exception ex)
                 {

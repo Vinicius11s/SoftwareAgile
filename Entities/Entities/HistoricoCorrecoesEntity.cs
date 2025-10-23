@@ -24,24 +24,36 @@ namespace Domain.Entities
 
         [Required]
         [MaxLength(50)]
-        public string TipoCorrecao { get; set; } = string.Empty;
+        public string TipoCorrecao { get; set; } = string.Empty; // "NOME", "GRAMAGEM", "VARIEDADE"
 
         public DateTime DataCorrecao { get; set; } = DateTime.Now;
 
         [MaxLength(100)]
-        public string UsuarioId { get; set; } = string.Empty;
+        public string UsuarioId { get; set; } = string.Empty; // Para identificar o usuário/cliente
 
         [MaxLength(100)]
-        public string EmpresaId { get; set; } = string.Empty;
+        public string EmpresaId { get; set; } = string.Empty; // Para identificar a empresa
 
         [MaxLength(100)]
-        public string SessaoId { get; set; } = string.Empty;
+        public string SessaoId { get; set; } = string.Empty; // Para identificar a sessão
 
         [MaxLength(100)]
-        public string IpAddress { get; set; } = string.Empty;
+        public string IpAddress { get; set; } = string.Empty; // Para auditoria
 
         [MaxLength(500)]
-        public string UserAgent { get; set; } = string.Empty;
+        public string UserAgent { get; set; } = string.Empty; // Para auditoria
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

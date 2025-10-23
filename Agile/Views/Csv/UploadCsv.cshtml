@@ -1,0 +1,190 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Upload de Dados";
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/uploadCsv.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+   
+}
+
+
+    // Determinar imagem do fundo
+    string fundoSelecionado = ViewData["FundoSelecionado"]?.ToString() ?? "padrao";
+    string tamanhoSelecionado = ViewData["TamanhoSelecionado"]?.ToString() ?? "A5";
+    string fundoImagem = "";
+    
+    if (fundoSelecionado == "padrao")
+    {
+        fundoImagem = tamanhoSelecionado == "A4" ? Url.Content("~/fundos/fundoPadraoA4.png") : Url.Content("~/fundos/fundoPadraoA5.png");
+    }
+    else
+    {
+        // Fundo personalizado - a imagem será carregada via JavaScript
+        fundoImagem = ""; // Será preenchida via JavaScript
+    }
+}
+
+<div class="d-flex align-items-center justify-content-center min-vh-100">
+    <div class="upload-container" style="max-width: 700px; width: 100%;">
+        <div class="p-5">
+
+            <!-- Título -->
+            <div class="text-center mb-4">
+                <h2 class="upload-title">Gerar Cartazes</h2>
+                <p class="upload-subtitle">Transforme seu arquivo CSV em cartazes promocionais de forma ágil e prática.</p>
+            </div>
+
+            <!-- Prévia do fundo selecionado -->
+            <div class="fundo-preview text-center">
+                <p class="fw-semibold text-warning mb-3">Fundo selecionado:</p>
+                <img id="fundoPreview" src="@fundoImagem" alt="Fundo selecionado" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+            </div>
+
+            <!-- Formulário -->
+            @{
+                string actionName = tamanhoSelecionado == "A4" ? "GerarCartazA4" : "GerarCartazA5";
+            }
+            
+            @using (Html.BeginForm(actionName, "Pdf", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <!-- Campo hidden para passar o fundo selecionado -->
+                <input type="hidden" name="fundoSelecionado" value="@fundoSelecionado" />
+
+                <div class="mb-3">
+                    <label for="csv" class="form-label fw-semibold">📂 Arquivo CSV</label>
+                    <input type="file" name="csv" id="csv" class="form-control bg-black text-light border-secondary" required />
+                    <div class="form-text text-secondary">
+                        Estrutura esperada: <code>descricao;preco</code>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-warning py-2 fw-bold shadow-sm" onclick="previewCartazes()">
+                        <img src="~/images/icon-pre-vizuali.png" alt="Pré-visualizar" class="me-2" style="width: 20px; height: 20px;">Tratar e Pré-visualizar
+                    </button>
+                    <button type="submit" class="btn btn-warning py-2 fw-bold shadow-sm">
+                        <img src="~/images/icon-pdf.png" alt="Gerar PDF" class="me-2" style="width: 20px; height: 20px;">Gerar PDF @tamanhoSelecionado
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ativar validação Bootstrap
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
+    function previewCartazes() {
+        const csvFile = document.getElementById('csv').files[0];
+        if (!csvFile) {
+            alert('Por favor, selecione um arquivo CSV primeiro.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('csv', csvFile);
+        formData.append('fundoSelecionado', '@fundoSelecionado');
+        formData.append('tamanhoSelecionado', '@tamanhoSelecionado');
+
+        // Mostrar loading
+        const previewBtn = event.target;
+        const originalText = previewBtn.innerHTML;
+        previewBtn.innerHTML = '⏳ Processando...';
+        previewBtn.disabled = true;
+
+        fetch('@Url.Action("PreviewCartazes", "Cartazes")', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '@Url.Action("Preview", "Cartazes")';
+            } else {
+                throw new Error('Erro ao processar CSV');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao processar o arquivo CSV. Verifique se o formato está correto.');
+        })
+        .finally(() => {
+            previewBtn.innerHTML = originalText;
+            previewBtn.disabled = false;
+        });
+    }
+
+    // Carregar imagem do fundo personalizado se necessário
+    document.addEventListener('DOMContentLoaded', function() {
+        const fundoSelecionado = '@fundoSelecionado';
+        const tamanhoSelecionado = '@tamanhoSelecionado';
+        
+        console.log('Fundo selecionado:', fundoSelecionado);
+        
+        if (fundoSelecionado !== 'padrao') {
+            // Carregar informações do fundo personalizado
+            fetch(`/Fundos/ObterFundoPersonalizado?id=${fundoSelecionado}`)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dados recebidos:', data);
+                    console.log('data.success:', data.success);
+                    console.log('data.fundo:', data.fundo);
+                    
+                    if (data.success && data.fundo) {
+                        console.log('data.fundo.caminhoImagem:', data.fundo.caminhoImagem);
+                        const img = document.getElementById('fundoPreview');
+                        console.log('Elemento img encontrado:', img);
+                        if (img) {
+                            img.src = data.fundo.caminhoImagem;
+                            console.log('Imagem carregada:', data.fundo.caminhoImagem);
+                            // Forçar reload da imagem
+                            img.onload = function() {
+                                console.log('Imagem carregada com sucesso!');
+                            };
+                            img.onerror = function() {
+                                console.error('Erro ao carregar a imagem:', data.fundo.caminhoImagem);
+                            };
+                        } else {
+                            console.error('Elemento img não encontrado!');
+                        }
+                    } else {
+                        console.error('Fundo não encontrado ou erro na resposta:', data);
+                        // Mostrar mensagem de erro
+                        const container = document.querySelector('.text-center.mb-4');
+                        if (container) {
+                            container.innerHTML = '<p class="text-danger">Erro ao carregar fundo selecionado</p>';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar fundo personalizado:', error);
+                    // Mostrar mensagem de erro
+                    const container = document.querySelector('.text-center.mb-4');
+                    if (container) {
+                        container.innerHTML = '<p class="text-danger">Erro ao carregar fundo selecionado</p>';
+                    }
+                });
+        }
+    });
+</script>

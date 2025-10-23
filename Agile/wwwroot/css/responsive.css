@@ -14,7 +14,7 @@ body {
 
 /* Classe específica para páginas de login/cartaz */
 .body_login {
-    background-image: url('/images/teste.png');
+    background-image: url('/images/fundoSemLogo.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -31,15 +31,16 @@ body {
     background-attachment: fixed;
 }
 
-/* Cards melhorados para Cartaz */
+/* Cards modernos para Cartaz */
 .cartaz-card {
-    background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
-    border: 1px solid #333;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    border: 1px solid rgba(245, 197, 24, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 197, 24, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .cartaz-card::before {
@@ -48,20 +49,24 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #f5c518, #ffd700, #f5c518);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f5c518, #ffd700, #f5c518, transparent);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.4s ease;
+    transform: scaleX(0);
+    transform-origin: center;
 }
 
 .cartaz-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 48px rgba(245, 197, 24, 0.2);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(245, 197, 24, 0.3), 0 0 0 1px rgba(245, 197, 24, 0.4);
     border-color: #f5c518;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1f1f1f 50%, #0f0f0f 100%);
 }
 
 .cartaz-card:hover::before {
     opacity: 1;
+    transform: scaleX(1);
 }
 
 .cartaz-card .card-body {
@@ -72,15 +77,18 @@ body {
 
 .cartaz-card .card-title {
     color: #f5c518;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
     margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.3);
+    letter-spacing: 0.5px;
 }
 
 .cartaz-card .card-text {
-    color: #bdbdbd;
-    font-size: 1rem;
+    color: #e0e0e0;
+    font-size: 1.1rem;
     line-height: 1.6;
+    font-weight: 400;
 }
 
 /* Espaçamento melhorado entre seções */

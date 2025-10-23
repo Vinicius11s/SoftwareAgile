@@ -1,0 +1,142 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Upload CSV - Posts Web";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/uploadCsv.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+}
+
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-white mb-3">
+            <i class="fas fa-upload me-3"></i>Upload CSV - Posts Web
+        </h1>
+        <p class="lead text-light mb-4">Faça upload do seu arquivo CSV com códigos de barras e preços</p>
+        
+        <!-- Informações sobre o formato -->
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Formato do CSV:</strong> código_barras;preço (ex: 7891234567890;29.90)
+        </div>
+    </div>
+    
+    <!-- Upload Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="upload-card">
+                <form asp-action="UploadCsv" asp-controller="Posts" method="post" enctype="multipart/form-data" id="uploadForm">
+                    <input type="hidden" name="fundo" value="@ViewData["FundoSelecionado"]" />
+                    <input type="hidden" name="tipo" value="@ViewData["TipoSelecionado"]" />
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h4 class="upload-title">Arraste seu arquivo CSV aqui</h4>
+                            <p class="upload-subtitle">ou clique para selecionar</p>
+                            <input type="file" name="csv" id="csvFile" accept=".csv" required class="d-none">
+                        </div>
+                    </div>
+                    
+                    <div class="file-info d-none" id="fileInfo">
+                        <div class="file-details">
+                            <i class="fas fa-file-csv file-icon"></i>
+                            <div class="file-text">
+                                <span class="file-name" id="fileName"></span>
+                                <span class="file-size" id="fileSize"></span>
+                            </div>
+                            <button type="button" class="btn-remove" id="btnRemove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-warning btn-lg" id="btnUpload" disabled>
+                            <i class="fas fa-upload me-2"></i>Processar CSV
+                        </button>
+                        <a href="@Url.Action("EscolherFundo", "Posts", new { tipo = "web" })" class="btn btn-outline-warning btn-lg ms-3">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('csvFile');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const btnUpload = document.getElementById('btnUpload');
+            const btnRemove = document.getElementById('btnRemove');
+            
+            // Click to upload
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFile(e.target.files[0]);
+                }
+            });
+            
+            // Remove file
+            btnRemove.addEventListener('click', () => {
+                fileInput.value = '';
+                fileInfo.classList.add('d-none');
+                uploadArea.classList.remove('d-none');
+                btnUpload.disabled = true;
+            });
+            
+            function handleFile(file) {
+                if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+                    alert('Por favor, selecione um arquivo CSV válido.');
+                    return;
+                }
+                
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                
+                fileInfo.classList.remove('d-none');
+                uploadArea.classList.add('d-none');
+                btnUpload.disabled = false;
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            }
+        });
+    </script>
+}
+

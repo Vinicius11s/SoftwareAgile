@@ -1,0 +1,202 @@
+.customize-container {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    border: 1px solid rgba(245, 197, 24, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(245, 197, 24, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    margin: 2rem auto;
+    max-width: 95%;
+}
+
+.customize-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f5c518, #ffd700, #f5c518, transparent);
+    opacity: 0.8;
+}
+
+.customize-header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-bottom: 1px solid rgba(245, 197, 24, 0.3);
+    padding: 2rem;
+    text-align: center;
+}
+
+.customize-title {
+    color: #f5c518;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
+    margin-bottom: 1rem;
+}
+
+.customize-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    min-height: 600px;
+}
+
+.preview-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 15px;
+    border: 1px solid rgba(245, 197, 24, 0.3);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+    .preview-section h3 {
+        color: #f5c518;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+.cartaz-preview {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    flex: 1;
+    position: relative;
+    min-height: 400px;
+}
+
+    .cartaz-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+.controls-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 15px;
+    border: 1px solid rgba(245, 197, 24, 0.3);
+    padding: 1.5rem;
+}
+
+    .controls-section h3 {
+        color: #f5c518;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+.control-group {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(245, 197, 24, 0.3);
+}
+
+    .control-group h4 {
+        color: #f5c518;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+.control-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.control-label {
+    color: #e0e0e0;
+    font-weight: 500;
+    min-width: 80px;
+}
+
+.control-slider {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #333, #f5c518);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+    .control-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #f5c518;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    }
+
+.control-value {
+    color: #f5c518;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.action-buttons {
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-top: 1px solid rgba(245, 197, 24, 0.3);
+}
+
+.btn-modern {
+    background: linear-gradient(135deg, #f5c518, #ffd700);
+    border: none;
+    color: #000;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0.5rem;
+}
+
+    .btn-modern:hover {
+        background: linear-gradient(135deg, #ffd700, #f5c518);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 197, 24, 0.4);
+    }
+
+.btn-outline-modern {
+    background: transparent;
+    border: 2px solid #f5c518;
+    color: #f5c518;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0.5rem;
+}
+
+    .btn-outline-modern:hover {
+        background: linear-gradient(135deg, #f5c518, #ffd700);
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 197, 24, 0.3);
+    }
+
+@media (max-width: 768px) {
+    .customize-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}

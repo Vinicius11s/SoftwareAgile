@@ -100,7 +100,7 @@ body {
 /* Bot�o secund�rio (transparente com borda amarela) */
 .btn-secondary {
     color: white; /* Texto amarelo */
-    background-color: black;
+    background-color: transparent; /* remove o fundo preto */
     border: 2px solid #FFD700; /* Borda amarela */
 }
 
@@ -115,8 +115,8 @@ body {
     align-items: center; /* Centraliza verticalmente */
     justify-content: center; /* Centraliza horizontalmente */
     gap: 50px; /* Espa�o entre imagem e texto */
-    padding: 50px 20px; /* Espa�amento interno */
-    background-color: #000; /* Fundo preto */
+    padding: 0 20px 50px 20px; /* Espa�amento interno */
+    background-color: transparent; /* remove o fundo preto */
 }
 
     .main-content img {
@@ -173,4 +173,59 @@ body {
     font-size: 24px; /* �cone grande */
     text-decoration: none; /* Remove sublinhado */
     z-index: 1000; /* Garante que fica acima de tudo */
+}
+
+/* Remove qualquer linha entre botões e main-content */
+.primary_section, .buttons, .main-content {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    background: transparent !important;
+}
+
+/* Espaçamento entre título e parágrafo */
+.primary_section p {
+    margin-top: 20px !important;
+}
+
+/* Ajusta espaçamento dos botões */
+.buttons {
+    margin-top: 40px !important; /* reduz espaço entre parágrafo e botões */
+}
+
+/* Main content com gradiente sutil e mais próximo */
+.main-content {
+    margin-top: -20px !important; /* sobe o main-content */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent) !important;
+    padding-top: 30px !important;
+}
+
+/* Padroniza botões com visual premium */
+.btn-primary {
+    background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+    border: 2px solid #FFD700 !important;
+    color: #000 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #FFA500, #FF8C00) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
+}
+
+.btn-secondary {
+    background: transparent !important;
+    border: 2px solid #FFD700 !important;
+    color: #FFD700 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+    color: #000 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4) !important;
 }

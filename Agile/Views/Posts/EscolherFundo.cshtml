@@ -1,0 +1,110 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Posts Web - Escolher Fundo";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        .fundo-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            border: 1px solid rgba(245, 197, 24, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 197, 24, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .fundo-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(245, 197, 24, 0.3), 0 0 0 1px rgba(245, 197, 24, 0.4);
+            border-color: #f5c518;
+        }
+        
+        .fundo-image-container {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .fundo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+        
+        .fundo-card:hover .fundo-image {
+            transform: scale(1.1);
+        }
+        
+        .fundo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .fundo-card:hover .fundo-overlay {
+            opacity: 1;
+        }
+        
+        .fundo-title {
+            color: #f5c518;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(245, 197, 24, 0.3);
+        }
+        
+        .fundo-select {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(245, 197, 24, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            border: 1px solid rgba(245, 197, 24, 0.3);
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-white mb-3">Posts Web com Fotos</h1>
+        <p class="lead text-light mb-4">Escolha um fundo para seus posts de redes sociais</p>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Formato do CSV:</strong> código_barras;preço (ex: 7891234567890;29.90)
+        </div>
+    </div>
+    
+    <!-- Fundo Padrão -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 mb-4">
+            <div class="fundo-card" style="cursor:pointer;"
+                 onclick="location.href='@Url.Action("UploadCsv", "Posts")?fundo=padrao&tipo=@ViewData["TipoSelecionado"]'">
+                <div class="fundo-image-container">
+                    <img src="~/fundos/padraoPostWEB.png" class="fundo-image" alt="Fundo Padrão Posts Web">
+                    <div class="fundo-overlay">
+                        <div class="fundo-info">
+                            <h5 class="fundo-title">Fundo Padrão Posts Web</h5>
+                            <span class="fundo-select">Clique para selecionar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

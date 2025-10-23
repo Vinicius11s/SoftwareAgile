@@ -4,11 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Agile</title>
-    <link rel="icon" type="image/png" href="~/logo/default_transparent_765x625.png" />
+    <link rel="icon" type="image/x-icon" href="~/agile.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/logo/favicon_32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/logo/favicon_transparent_32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/logo/favicon_transparent_32x32.png" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" content="#000000" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @* Espaço para CSS adicional de cada página *@
     @RenderSection("Styles", required: false)
@@ -16,13 +22,9 @@
 <body class="d-flex flex-column min-vh-100 text-light">
     <!-- Navbar -->
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm">
-            <div class="container">
-                <!-- Logo -->
-                <a class="navbar-brand d-flex align-items-center" asp-controller="Agile" asp-action="Index">
-                    <img src="~/images/LogoComNome.png" alt="Logo" style="height:50px;">
-                </a>
-
+        <nav class="navbar navbar-expand-lg navbar-dark ai-navbar shadow-sm">
+            <div class="container-fluid px-3">
+                <!-- Logo -->             
                 <!-- Botão hamburguer -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
@@ -39,16 +41,25 @@
 
                     @if (usuarioLogado)
                     {
+                        <a class="navbar-brand d-flex align-items-center" asp-controller="Cartazes" asp-action="EscolherTamanho">
+                            <img src="~/images/LogoComNome.png" alt="Logo" style="height:50px;">
+                        </a>
                         <!-- Menu para usuário logado -->
                         <ul class="navbar-nav mx-auto gap-lg-4 text-center">
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold text-white" asp-controller="Cartazes" asp-action="Index">GERAR CARTAZES</a>
+                                <a class="nav-link fw-semibold text-white nav-link-border" asp-controller="Cartazes" asp-action="EscolherTamanho">
+                                    GERAR CARTAZES
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold text-white" asp-controller="Cartazes" asp-action="Learning">🧠 APRENDIZADO</a>
+                                <a class="nav-link fw-semibold text-white nav-link-border" asp-controller="Learning" asp-action="Index">
+                                    APRENDIZADO
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link fw-semibold text-white" href="https://wa.me/18996251546" >SUPORTE</a>
+                                <a class="nav-link fw-semibold text-white nav-link-border" href="https://wa.me/18996251546" >
+                                    SUPORTE
+                                </a>
                             </li>
                         </ul>
 
@@ -65,19 +76,16 @@
                     else
                     {
                         <!-- Menu para usuário não logado -->
+                        <a class="navbar-brand d-flex align-items-center" asp-controller="Agile" asp-action="Index">
+                            <img src="~/images/LogoComNome.png" alt="Logo" style="height:50px;">
+                        </a>
                         <ul class="navbar-nav mx-auto gap-lg-4 text-center">
-                            <li class="nav-item">
+                            <!--<li class="nav-item">
                                 <a class="nav-link fw-semibold text-white" asp-controller="Agile" asp-action="Index">HOME</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold text-white" href="#quem-somos">QUEM SOMOS</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold text-white" href="#soluções">SOLUÇÕES</a>
-                            </li>
-                            <li class="nav-item">
+                            </li>-->
+                            <!--<li class="nav-item">
                                 <a class="nav-link fw-semibold text-white" asp-controller="Cartazes" asp-action="Planos">PLANOS</a>
-                            </li> 
+                            </li> -->
                         </ul>
 
                         <!-- Botões à direita para usuário não logado -->

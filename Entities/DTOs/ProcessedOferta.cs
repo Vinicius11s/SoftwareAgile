@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Domain.DTOs
 {
@@ -16,6 +17,7 @@ namespace Domain.DTOs
         public string DescricaoOriginal { get; set; } = string.Empty;
         public string DescricaoFormatada { get; set; } = string.Empty; // "NOME\nGRAMAGEM"
         public bool IsFamilia { get; set; }
+        [JsonIgnore]
         public List<ProcessedOferta> ProdutosOriginais { get; set; } = new List<ProcessedOferta>();
         public int QuantidadeProdutos { get; set; } = 1;
 
@@ -77,10 +79,20 @@ namespace Domain.DTOs
                         linhas.Add(textoNomeVariedade);
                     }
                     
-                    // Linha 2: Só gramagem
+                    // Linha 2: Só gramagem (mas evite gramagem sozinha se linha 1 couber com gramagem)
                     if (!string.IsNullOrEmpty(Gramagem))
                     {
-                        linhas.Add(Gramagem);
+                        var tentativaLinha1 = (textoNomeVariedade + " " + Gramagem).Trim();
+                        if (tentativaLinha1.Length <= 16)
+                        {
+                            // Melhor manter tudo na primeira linha
+                            linhas.Clear();
+                            linhas.Add(tentativaLinha1);
+                        }
+                        else
+                        {
+                            linhas.Add(Gramagem);
+                        }
                     }
                 }
                 else
@@ -271,6 +283,7 @@ namespace Domain.DTOs
             
             return string.Join("\n", resultado);
         }
+
 
         private string QuebrarInteligente(string texto, int maxCaracteres)
         {

@@ -1,0 +1,368 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Personalização";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        .fundo-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            border: 1px solid rgba(245, 197, 24, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 197, 24, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .fundo-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(245, 197, 24, 0.3), 0 0 0 1px rgba(245, 197, 24, 0.4);
+            border-color: #f5c518;
+        }
+        
+        .fundo-image-container {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .fundo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+        
+        .fundo-card:hover .fundo-image {
+            transform: scale(1.1);
+        }
+        
+        .fundo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .fundo-card:hover .fundo-overlay {
+            opacity: 1;
+        }
+        
+        .fundo-title {
+            color: #f5c518;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(245, 197, 24, 0.3);
+        }
+        
+        .fundo-select {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(245, 197, 24, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            border: 1px solid rgba(245, 197, 24, 0.3);
+        }
+        
+        .fundo-delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(220, 53, 69, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .fundo-card:hover .fundo-delete-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .fundo-delete-btn:hover {
+            background: rgba(220, 53, 69, 1);
+            transform: scale(1.1);
+        }
+        
+        .delete-icon {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
+        }
+    </style>
+    
+    <!-- Modal de Confirmação Customizado -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border-warning">
+                <div class="modal-header border-warning">
+                    <h5 class="modal-title text-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Ação
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer border-warning">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmBtn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="notificationToast" class="toast bg-dark text-light border-warning" role="alert">
+            <div class="toast-header bg-dark border-warning">
+                <i id="toastIcon" class="fas fa-info-circle text-warning me-2"></i>
+                <strong class="me-auto text-warning">Notificação</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
+}
+
+    <div class="container py-5">
+        <!-- Header Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-white mb-3">Escolha o Fundo do Cartaz</h1>
+            <p class="lead text-light mb-4">Selecione um dos fundos disponíveis ou faça upload do seu próprio</p>
+            <button type="button" class="btn btn-warning btn-lg fw-bold px-4" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <img src="~/images/icon-upload.png" alt="Upload" class="me-2" style="width: 20px; height: 20px;">Upload Fundo Personalizado
+            </button>
+        </div>
+        
+        <!-- Fundos Grid -->
+        <div class="row justify-content-center" id="fundosContainer">
+            @foreach (var fundo in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="fundo-card" style="cursor:pointer;"
+                         onclick="location.href='@Url.Action("UploadCsv", "Csv")?fundo=@fundo.Item3&tamanho=@ViewData["TamanhoSelecionado"]'">
+                        <div class="fundo-image-container">
+                            <img src="@Url.Content(fundo.Item2)" class="fundo-image" alt="@fundo.Item1">
+                            <div class="fundo-overlay">
+                                <div class="fundo-info">
+                                    <h5 class="fundo-title">@fundo.Item1</h5>
+                                    <span class="fundo-select">Clique para selecionar</span>
+                                </div>
+                            </div>
+                            @if (fundo.Item3 != "padrao")
+                            {
+                                <div class="fundo-delete-btn" onclick="event.stopPropagation(); excluirFundo('@fundo.Item3', '@fundo.Item1')">
+                                    <img src="~/images/icon-lixeira.png" alt="Excluir" class="delete-icon">
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Modal de Upload -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="uploadModalLabel">📁 Upload Fundo Personalizado</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="nomeFundo" class="form-label fw-semibold">Nome do Fundo</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" id="nomeFundo" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="arquivoFundo" class="form-label fw-semibold">Arquivo de Imagem</label>
+                            <input type="file" class="form-control bg-dark text-light border-secondary" id="arquivoFundo" name="arquivo" accept=".jpg,.jpeg,.png" required>
+                            <div class="form-text text-secondary">Formatos aceitos: JPG, JPEG, PNG (máximo 5MB)</div>
+                        </div>
+                        <input type="hidden" id="tamanhoFundo" name="tamanho" value="@ViewData["TamanhoSelecionado"]">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning fw-bold" onclick="uploadFundo()">
+                        <img src="~/images/icon-upload.png" alt="Upload" class="me-2" style="width: 16px; height: 16px;">Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            function uploadFundo() {
+                const form = document.getElementById('uploadForm');
+                const formData = new FormData(form);
+                
+                // Mostrar loading
+                const btnUpload = document.querySelector('[onclick="uploadFundo()"]');
+                const originalText = btnUpload.innerHTML;
+                btnUpload.innerHTML = '⏳ Enviando...';
+                btnUpload.disabled = true;
+
+                fetch('@Url.Action("UploadFundoPersonalizado", "Fundos")', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Mostrar sucesso
+                        showNotification('success', '✅ ' + data.message);
+                        
+                        // Adicionar novo fundo à lista
+                        adicionarFundoToLista(data.fundo);
+                        
+                        // Fechar modal e limpar form
+                        bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide();
+                        form.reset();
+                    } else {
+                        showNotification('error', '❌ ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro no upload:', error);
+                    showNotification('error', '❌ Erro no upload: ' + error.message);
+                })
+                .finally(() => {
+                    btnUpload.innerHTML = originalText;
+                    btnUpload.disabled = false;
+                });
+            }
+
+            function adicionarFundoToLista(fundo) {
+                const container = document.getElementById('fundosContainer');
+                const tamanho = '@ViewData["TamanhoSelecionado"]';
+                const novoFundo = `
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="fundo-card" style="cursor:pointer;"
+                             onclick="location.href='@Url.Action("UploadCsv", "Csv")?fundo=${fundo.id}&tamanho=${tamanho}'">
+                            <div class="fundo-image-container">
+                                <img src="${fundo.imagem}" class="fundo-image" alt="${fundo.nome}">
+                                <div class="fundo-overlay">
+                                    <div class="fundo-info">
+                                        <h5 class="fundo-title">${fundo.nome}</h5>
+                                        <span class="fundo-select">Clique para selecionar</span>
+                                    </div>
+                                </div>
+                                <div class="fundo-delete-btn" onclick="event.stopPropagation(); excluirFundo('${fundo.id}', '${fundo.nome}')">
+                                    <img src="/images/icon-lixeira.png" alt="Excluir" class="delete-icon">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', novoFundo);
+            }
+            
+            function excluirFundo(fundoId, fundoNome) {
+                showConfirmModal(
+                    `Tem certeza que deseja excluir o fundo "${fundoNome}"?`,
+                    () => {
+                        fetch('@Url.Action("ExcluirFundo", "Fundos")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                            },
+                            body: JSON.stringify({ fundoId: fundoId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Remover o card do DOM
+                                const card = document.querySelector(`[onclick*="fundo=${fundoId}"]`).closest('.col-lg-4');
+                                card.remove();
+                                showNotification('success', '✅ Fundo excluído com sucesso!');
+                                
+                                // Forçar reload da página após 1 segundo para garantir sincronização
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                showNotification('error', '❌ Erro ao excluir fundo: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('error', '❌ Erro: ' + error.message);
+                        });
+                    }
+                );
+            }
+            
+            // Função para mostrar modal de confirmação
+            function showConfirmModal(message, onConfirm) {
+                document.getElementById('confirmMessage').textContent = message;
+                const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                
+                // Limpar listeners anteriores
+                const confirmBtn = document.getElementById('confirmBtn');
+                confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+                
+                // Adicionar novo listener
+                document.getElementById('confirmBtn').addEventListener('click', () => {
+                    modal.hide();
+                    onConfirm();
+                });
+                
+                modal.show();
+            }
+            
+            // Função para mostrar notificações
+            function showNotification(type, message) {
+                const toast = document.getElementById('notificationToast');
+                const toastIcon = document.getElementById('toastIcon');
+                const toastMessage = document.getElementById('toastMessage');
+                
+                // Configurar ícone e cor baseado no tipo
+                if (type === 'success') {
+                    toastIcon.className = 'fas fa-check-circle text-success me-2';
+                } else if (type === 'error') {
+                    toastIcon.className = 'fas fa-exclamation-circle text-danger me-2';
+                } else {
+                    toastIcon.className = 'fas fa-info-circle text-warning me-2';
+                }
+                
+                toastMessage.textContent = message;
+                
+                // Mostrar toast
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+            }
+        </script>
+    }
+
+
+

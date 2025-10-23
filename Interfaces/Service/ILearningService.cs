@@ -10,8 +10,13 @@ namespace Interfaces.Service
     public interface ILearningService
     {
         void RegistrarCorrecao(string textoOriginal, string textoCorrigido, string tipoCorrecao, string sessaoId);
-        string AplicarCorrecoesAprendidas(string texto, string tipoCorrecao);
+        Task RegistrarCorrecaoAsync(string textoOriginal, string textoCorrigido, string tipoCorrecao, string sessaoId, string usuarioId = null, string empresaId = null);
+        string AplicarCorrecoesAprendidas(string texto, string tipoCorrecao, string usuarioId = null, string empresaId = null);
         List<CorrecaoAprendida> ObterCorrecoesAprendidas(string tipoCorrecao = null);
+        List<CorrecaoAprendida> ObterTodasCorrecoesAprendidas(string tipoCorrecao = null, string usuarioId = null, string empresaId = null);
+        Task<List<CorrecaoAprendida>> ObterTodasCorrecoesAprendidasAsync(string tipoCorrecao = null, string usuarioId = null, string empresaId = null);
+        List<CorrecaoAprendida> ObterCorrecoesDesativadas(string tipoCorrecao = null, string usuarioId = null, string empresaId = null);
+        Task<List<CorrecaoAprendida>> ObterCorrecoesDesativadasAsync(string tipoCorrecao = null, string usuarioId = null, string empresaId = null);
         void DesativarCorrecao(int id);
         void AtivarCorrecao(int id);
         void RemoverCorrecao(int id);
@@ -21,4 +26,14 @@ namespace Interfaces.Service
         public void LimparCorrecoesProblematicas();
     }
 }
+
+
+
+
+
+
+
+
+
+
 

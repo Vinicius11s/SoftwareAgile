@@ -1,0 +1,234 @@
+@model Domain.DTOs.PostWebPreviewData
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Preview Posts Web";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/AgileIndex.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css?v=@ViewData["CacheBuster"]" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        .post-card {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            border: 1px solid rgba(245, 197, 24, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(245, 197, 24, 0.2);
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-com-imagem {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+        }
+        
+        .status-sem-imagem {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 1px solid rgba(245, 197, 24, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-white mb-3">
+            <i class="fas fa-images me-3"></i>Preview Posts Web
+        </h1>
+        <p class="lead text-light mb-4">Visualize seus posts com fotos dos produtos</p>
+    </div>
+    
+    <!-- Estatísticas -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="stats-card text-center">
+                <h3 class="text-warning mb-2">@Model.TotalProdutos</h3>
+                <p class="text-light mb-0">Total de Produtos</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stats-card text-center">
+                <h3 class="text-success mb-2">@Model.TotalComImagens</h3>
+                <p class="text-light mb-0">Com Imagens (@Model.PercentualComImagens.ToString("F1")%)</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stats-card text-center">
+                <h3 class="text-danger mb-2">@Model.TotalSemImagens</h3>
+                <p class="text-light mb-0">Sem Imagens (@Model.PercentualSemImagens.ToString("F1")%)</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Posts Grid -->
+    <div class="row" id="postsContainer">
+        @foreach (var post in Model.Posts)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="post-card position-relative">
+                    <div class="p-3">
+                        @if (post.TemImagem)
+                        {
+                            @if (post.ImagemBytes != null)
+                            {
+                                try
+                                {
+                                    var base64 = Convert.ToBase64String(post.ImagemBytes);
+                                    var imgSrc = $"data:image/png;base64,{base64}";
+                                    <img src="@imgSrc" 
+                                         class="post-image" alt="Produto @post.CodigoBarras"
+                                         onerror="this.onerror=null; this.src='@(post.ImagemInfo?.CaminhoImagem ?? "")';">
+                                    <div class="status-badge status-com-imagem">
+                                        <i class="fas fa-check me-1"></i>Com Imagem
+                                    </div>
+                                }
+                                catch (Exception ex)
+                                {
+                                    <img src="@(post.ImagemInfo?.CaminhoImagem ?? "")" 
+                                         class="post-image" alt="Produto @post.CodigoBarras"
+                                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="post-image d-flex align-items-center justify-content-center bg-secondary" style="display:none;">
+                                        <i class="fas fa-image fa-3x text-muted"></i>
+                                    </div>
+                                    <div class="status-badge status-com-imagem">
+                                        <i class="fas fa-check me-1"></i>Com Imagem
+                                    </div>
+                                }
+                            }
+                            else if (post.ImagemInfo?.CaminhoImagem != null)
+                            {
+                                <img src="@post.ImagemInfo.CaminhoImagem" 
+                                     class="post-image" alt="Produto @post.CodigoBarras"
+                                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="post-image d-flex align-items-center justify-content-center bg-secondary" style="display:none;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                                <div class="status-badge status-com-imagem">
+                                    <i class="fas fa-check me-1"></i>Com Imagem
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="post-image d-flex align-items-center justify-content-center bg-secondary">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                                <div class="status-badge status-sem-imagem">
+                                    <i class="fas fa-times me-1"></i>Sem Imagem
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="post-image d-flex align-items-center justify-content-center bg-secondary">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                            <div class="status-badge status-sem-imagem">
+                                <i class="fas fa-times me-1"></i>Sem Imagem
+                            </div>
+                        }
+                        
+                        <div class="mt-3">
+                            <h6 class="text-warning mb-2">
+                                <i class="fas fa-barcode me-2"></i>@post.CodigoBarras
+                            </h6>
+                            <h5 class="text-white mb-2">@post.PrecoFormatado</h5>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>@post.DataFormatada
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <!-- Ações -->
+    <div class="text-center mt-5">
+        <button class="btn btn-warning btn-lg me-3" onclick="gerarPosts()">
+            <i class="fas fa-download me-2"></i>Gerar Posts
+        </button>
+        <a href="@Url.Action("EscolherFundo", "Posts", new { tipo = "web" })" class="btn btn-outline-warning btn-lg">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function gerarPosts() {
+            // Mostrar loading
+            const btnGerar = document.querySelector('[onclick="gerarPosts()"]');
+            const originalText = btnGerar.innerHTML;
+            btnGerar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Gerando Posts...';
+            btnGerar.disabled = true;
+
+            // Fazer requisição para gerar posts
+            fetch('@Url.Action("GerarPosts", "Posts")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Criar link para download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'posts_web.zip';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Mostrar sucesso
+                alert('Posts gerados com sucesso! O download foi iniciado.');
+            })
+            .catch(error => {
+                console.error('Erro ao gerar posts:', error);
+                alert('Erro ao gerar posts: ' + error.message);
+            })
+            .finally(() => {
+                btnGerar.innerHTML = originalText;
+                btnGerar.disabled = false;
+            });
+        }
+    </script>
+}

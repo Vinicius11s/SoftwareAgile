@@ -5,14 +5,17 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/preview.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/correcoes-aprendidas.css" asp-append-version="true" />
 }
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="preview-header">
-                <h2>🧠 Correções Aprendidas</h2>
+                <h2>
+                    <img src="~/images/icon-correcoesApree.png" alt="" width="50" height="50" class="me-2 align-text-bottom" />
+                    Correções Aprendidas
+                </h2>
                 <p class="text-center">O sistema aprende com suas correções e as aplica automaticamente em futuros uploads</p>
             </div>
         </div>
@@ -45,7 +48,7 @@
         <div class="col-12 mb-3">
             <div class="edit-section">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <select id="filtroTipo" class="form-control">
                             <option value="">Todos os tipos</option>
                             <option value="NOME">Nomes</option>
@@ -53,11 +56,26 @@
                             <option value="VARIEDADE">Variedades</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" id="filtroTexto" class="form-control" placeholder="Buscar por texto...">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <select id="filtroStatus" class="form-control">
+                            <option value="ativo">Apenas Ativas</option>
+                            <option value="desativado">Apenas Desativadas</option>
+                            <option value="todos">Todas</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
                         <button class="btn btn-warning" onclick="limparFiltros()">Limpar Filtros</button>
+                        @if (ViewData["MostrarDesativadas"] as bool? == true)
+                        {
+                            <a href="@Url.Action("Index", "Learning")" class="btn btn-success ms-2">Ver Apenas Ativas</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Index", "Learning", new { mostrarDesativadas = true })" class="btn ms-2" style="background-color: black; color: white; border: 1px solid black;">Ver Desativadas</a>
+                        }
                     </div>
                 </div>
             </div>
@@ -66,27 +84,44 @@
         <!-- Lista de Correções -->
         <div class="col-12">
             <div class="edit-section">
-                <h3>📚 Correções Aprendidas</h3>
+                <h3>
+                    <img src="~/images/icon-correcoesApree.png" alt="Correções" class="me-2" style="width: 24px; height: 24px;">
+                    Correções Aprendidas
+                </h3>
                 <div id="listaCorrecoes">
                     @if (Model != null && Model.Any())
                     {
                         @foreach (var correcao in Model.OrderByDescending(c => c.FrequenciaUso))
                         {
-                            <div class="correcao-item" data-tipo="@correcao.TipoCorrecao" data-texto="@correcao.TextoOriginal.ToLower()">
+                            <div class="correcao-item @(correcao.Ativo ? "" : "correcao-desativada")" data-tipo="@correcao.TipoCorrecao" data-texto="@correcao.TextoOriginal.ToLower()" data-status="@(correcao.Ativo ? "ativo" : "desativado")">
                                 <div class="correcao-header">
                                     <div class="correcao-info">
                                         <span class="tipo-badge tipo-@correcao.TipoCorrecao.ToLower()">@correcao.TipoCorrecao</span>
                                         <span class="frequencia">Usado @correcao.FrequenciaUso vezes</span>
+                                        @if (!correcao.Ativo)
+                                        {
+                                            <span class="status-badge status-desativado">DESATIVADA</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge status-ativo">ATIVA</span>
+                                        }
                                     </div>
                                     <div class="correcao-actions">
-                                        <button class="btn btn-sm btn-success" onclick="ativarCorrecao(@correcao.Id)" title="Ativar">
-                                            ✅
-                                        </button>
-                                        <button class="btn btn-sm btn-warning" onclick="desativarCorrecao(@correcao.Id)" title="Desativar">
-                                            ⏸️
-                                        </button>
-                                        <button class="btn btn-sm btn-danger" onclick="removerCorrecao(@correcao.Id)" title="Remover">
-                                            🗑️
+                                        @if (correcao.Ativo)
+                                        {
+                                            <button class="btn btn-sm btn-warning" onclick="desativarCorrecao(@correcao.Id)" title="Desativar">
+                                                <img src="~/images/icon-pausa.png" alt="Pausar" style="width: 16px; height: 16px;">
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-success" onclick="ativarCorrecao(@correcao.Id)" title="Reativar">
+                                                ✅
+                                            </button>
+                                        }
+                                        <button class="btn btn-sm" onclick="removerCorrecao(@correcao.Id)" title="Remover" style="background-color: white; border: 1px solid #dc3545; color: #dc3545;">
+                                            <img src="~/images/icon-lixeira.png" alt="Remover" style="width: 16px; height: 16px;">
                                         </button>
                                     </div>
                                 </div>
@@ -98,7 +133,7 @@
                                         <strong>Corrigido:</strong> <span style="color: green;">@correcao.TextoCorrigido</span>
                                     </div>
                                     <div class="correcao-meta">
-                                        <small class="text-muted">
+                                        <small style="color: #6c757d;">
                                             Criado em: @correcao.DataCriacao.ToString("dd/MM/yyyy HH:mm") | 
                                             Último uso: @correcao.UltimaUtilizacao.ToString("dd/MM/yyyy HH:mm")
                                         </small>
@@ -125,20 +160,24 @@
         // Filtros
         document.getElementById('filtroTipo').addEventListener('change', aplicarFiltros);
         document.getElementById('filtroTexto').addEventListener('input', aplicarFiltros);
+        document.getElementById('filtroStatus').addEventListener('change', aplicarFiltros);
 
         function aplicarFiltros() {
             const filtroTipo = document.getElementById('filtroTipo').value;
             const filtroTexto = document.getElementById('filtroTexto').value.toLowerCase();
+            const filtroStatus = document.getElementById('filtroStatus').value;
             const items = document.querySelectorAll('.correcao-item');
 
             items.forEach(item => {
                 const tipo = item.dataset.tipo;
                 const texto = item.dataset.texto;
+                const status = item.dataset.status;
                 
                 const matchTipo = !filtroTipo || tipo === filtroTipo;
                 const matchTexto = !filtroTexto || texto.includes(filtroTexto);
+                const matchStatus = filtroStatus === 'todos' || status === filtroStatus;
                 
-                if (matchTipo && matchTexto) {
+                if (matchTipo && matchTexto && matchStatus) {
                     item.style.display = 'block';
                 } else {
                     item.style.display = 'none';
@@ -149,6 +188,7 @@
         function limparFiltros() {
             document.getElementById('filtroTipo').value = '';
             document.getElementById('filtroTexto').value = '';
+            document.getElementById('filtroStatus').value = 'ativo';
             aplicarFiltros();
         }
 

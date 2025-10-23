@@ -26,6 +26,7 @@ namespace Infraestructure.Context
         public DbSet<FundoPersonalizado> FundosPersonalizados { get; set; }
         public DbSet<CorrecaoAprendidaEntity> CorrecoesAprendidas { get; set; }
         public DbSet<HistoricoCorrecoesEntity> HistoricoCorrecoes { get; set; }
+        public DbSet<ImagemProduto> ImagensProduto { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

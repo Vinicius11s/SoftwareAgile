@@ -57,3 +57,17 @@ namespace Infraestructure.Context.Configurations
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

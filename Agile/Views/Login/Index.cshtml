@@ -1,67 +1,65 @@
 ﻿@using Domain.DTOs
+@using System.Linq
 @model UsuarioDTO
 
-@{
-    Layout = "_Layout";
-    ViewData["Title"] = "Login";
-}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agile - Login</title>
+    <link rel="icon" type="image/x-icon" href="~/agile.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/logo/favicon_32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/logo/favicon_transparent_32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/logo/favicon_transparent_32x32.png" />
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="stylesheet" href="~/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/AgileIndex.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
-}
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.classList.add('body_login');
-        });
-    </script>
-}
-
-<section class="container pt-3 pb-5">
-    <div class="row align-items-center justify-content-center" style="margin-top: -85px; padding-top: 100px;">
-        <div class="col-12 col-md-6 col-lg-4">
-            <article class="card card-dark text-white p-4 login-card">
-                <header class="text-center mb-4">
-                    <img src="~/logo/default_transparent_1000x1000.png"
-                         alt="Logo Agile"
-                         class="img-fluid"
-                         style="max-width: 150px; height: auto;">
-                    <h1 class="text-center mb-1">Login</h1>
-                    <p class="text-center text-secondary-soft mb-4">Acesse sua conta para continuar</p>
-                </header>
-                
-                <form action="@Url.Action("ValidarLogin", "Login")" method="post" role="form">
+    <div class="container">
+        <div class="left-panel">
+            <div class="login-box">
+                <img src="~/images/LogoComNome.png" alt="Logo Agile" class="logo">
+                <form action="@Url.Action("ValidarLogin", "Login")" method="post">
                     @Html.AntiForgeryToken()
-                    <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3" role="alert"></div>
-
-                    <div class="mb-3">
-                        <label asp-for="Login" class="form-label">Login</label>
-                        <input type="text" asp-for="Login" class="form-control input-dark" placeholder="seu.login" required>
-                        <span asp-validation-for="Login" class="text-danger"></span>
-                    </div>
                     
-                    <div class="mb-3">
-                        <label asp-for="Senha" class="form-label">Senha</label>
-                        <input type="password" asp-for="Senha" class="form-control input-dark" placeholder="••••••••" required>
-                        <span asp-validation-for="Senha" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="mb-3 form-check d-flex justify-content-between">
-                        <div>
-                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Lembrar-me</label>
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger" style="background-color: #dc3545; color: white; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div>@error.ErrorMessage</div>
+                            }
                         </div>
-                        <a href="#" class="link-muted">Esqueceu a senha?</a>
-                    </div>
+                    }
                     
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-accent">Entrar</button>
+                    <div class="form-group">
+                        <input type="text" id="Login" name="Login" placeholder="Usuário" value="@Model?.Login" required>
                     </div>
+                    <div class="form-group">
+                        <input type="password" id="Senha" name="Senha" placeholder="Senha" required>
+                    </div>
+                    <a href="#" class="forgot-password">Esqueci minha senha</a>
+                    <button type="submit" class="btn-login">Entrar</button>
                 </form>
-            </article>
+            </div>
+            <div class="links-bottom">
+                <a href="#">Saiba + Agile</a>
+                <a href="#">Contato</a>
+                <a href="#">Política de privacidade</a>
+                <a href="#">Termos de serviço</a>
+            </div>
         </div>
-    </div>
-</section>
+        <div class="right-panel">
+            <div class="overlay"></div>
+            <div class="content-box">
+               
+                </div>
+            </div>
+        </div>
+
+</body>
+</html>

@@ -214,6 +214,76 @@ namespace Infraestructure.Migrations
                     b.ToTable("HistoricoCorrecoes", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.ImagemProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("CaminhoImagem")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("CodigoBarras")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("DataBusca")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataUpload")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FonteImagem")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NomeArquivo")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<long>("TamanhoArquivo")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TipoArquivo")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("UrlOrigem")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CodigoBarras");
+
+                    b.HasIndex("DataBusca");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioId", "Ativo");
+
+                    b.HasIndex("CodigoBarras", "UsuarioId", "Ativo");
+
+                    b.ToTable("ImagensProduto", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Oferta", b =>
                 {
                     b.Property<int>("Id")
@@ -260,6 +330,17 @@ namespace Infraestructure.Migrations
                 });
 
             modelBuilder.Entity("Domain.Entities.FundoPersonalizado", b =>
+                {
+                    b.HasOne("Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ImagemProduto", b =>
                 {
                     b.HasOne("Domain.Entities.Usuario", "Usuario")
                         .WithMany()

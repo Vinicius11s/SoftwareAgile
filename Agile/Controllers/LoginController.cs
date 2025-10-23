@@ -40,10 +40,14 @@ namespace Agile.Controllers
                     HttpContext.Session.SetString("UsuarioLogado", "true");
                     HttpContext.Session.SetString("NomeUsuario", usuario.Nome);
                     HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+                    
+                    // Definir EmpresaId baseado no usuário (por enquanto, usar o ID do usuário como empresa)
+                    // TODO: Implementar sistema de empresas quando necessário
+                    HttpContext.Session.SetString("EmpresaId", usuario.Id.ToString());
                 }
 
                 // Se o login for bem-sucedido, redireciona para a página inicial
-                return RedirectToAction("Index", "Cartazes");
+                return RedirectToAction("EscolherTamanho", "Cartazes");
             }
             else
             {

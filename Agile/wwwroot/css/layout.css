@@ -3,40 +3,112 @@
 }
 
 /* Ajustes da navbar */
-.navbar {
-    padding-top: 1.25rem;
-    padding-bottom: 1.25rem;
+/* Navbar estilo IA / Glassmorphism */
+.ai-navbar {
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+    background: #000 !important; /* fundo preto sólido */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.ai-navbar .navbar-brand img {
+    filter: none; /* sem sombra no logo */
+}
+
+/* Logo colado na esquerda */
+.navbar-brand {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
+/* Botões colados na direita */
+.navbar-nav.ms-auto {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    gap: 1.5rem !important; /* mais espaçamento entre os botões */
 }
 
 /* Centralizar os links (HOME, QUEM SOMOS, SOLU��ES, PLANOS) */
 .navbar-nav.mx-auto {
     justify-content: center;
     width: 50%;
+    gap: 1.45rem; /* mais espaço entre GERAR CARTAZES, APRENDIZADO e SUPORTE */
 }
 
 /* Links da navbar menores e mais finos */
+/* OPÇÕES DE FONTES PARA TESTAR */
+/* Opção 1: Inter (moderna, limpa) */
+/* .navbar-nav .nav-link {
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: 0.78rem;
+    font-weight: 600;
+} */
+
+/* Opção 2: Poppins (mais arredondada, amigável) */
+/* .navbar-nav .nav-link {
+    font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: 0.78rem;
+    font-weight: 600;
+} */
+
+/* Opção 3: Space Grotesk (futurista, tech) */
 .navbar-nav .nav-link {
-    font-size: 0.75rem;
-    font-weight: 100;
+    font-family: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: 0.78rem;
+    font-weight: 600;
 }
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-    color: #fff600 !important;
+    color: #fff;
+}
+
+.ai-navbar .nav-link {
+    color: #ffffff !important; /* sempre branco */
+    transition: color .2s ease, transform .2s ease, background-color .2s ease;
+}
+
+.ai-navbar .nav-link:hover {
+    color: #ffffff !important; /* mantém branco no hover */
+    transform: translateY(-1px);
+}
+
+/* Borda fina branca apenas nos links principais da navbar */
+.navbar-nav .nav-link.nav-link-border {
+    border: none; /* remove contorno dos links */
+    border-radius: 0;
+    padding: 0.45rem 0.9rem;
+    background: transparent;
+}
+
+.navbar-nav .nav-link.nav-link-border:hover {
+    border: none;
+    text-shadow: none;
 }
 
 /* Bot�es LOGIN e SUPORTE */
 .btn-outline {
-    border-color: #fff600 !important;
-    color: #fff !important;
-    font-size: 0.75rem;
+    font-family: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    border: 1px solid #fff600 !important; /* contorno amarelo do sistema */
+    color: #ffffff !important;
+    font-size: 0.70rem;
     font-weight: 700 !important;
-    padding: 0.80rem 0.5rem; /* menor altura */
-    
-
+    padding: 0.65rem 2rem !important; /* aumentei a largura horizontal do botão LOGIN */
+    border-radius: 6px; /* bordas menos arredondadas como na imagem */
+    background: transparent;
 }
 
 .btn-outline:hover {
-    background-color: #fff600 !important;
-    color: black !important;
+    border-color: #fff600 !important;
+    background-color: rgba(255, 246, 0, 0.1) !important; /* leve fundo amarelo no hover */
+    color: #ffffff !important;
 }

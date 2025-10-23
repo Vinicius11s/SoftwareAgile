@@ -9,10 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<Services.CsvServices>();
-builder.Services.AddTransient<Services.PdfServices>();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 builder.Services.AddScoped<Interfaces.Service.ILearningService, Services.DatabaseLearningService>();
+builder.Services.AddScoped<Services.CsvServices>();
+builder.Services.AddTransient<Services.PdfServices>();
 
 // Configurar sessões
 builder.Services.AddSession(options =>
@@ -26,6 +31,11 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IFundoPersonalizadoRepository, FundoPersonalizadoRepository>();
 builder.Services.AddScoped<IFundoPersonalizadoService, FundoPersonalizadoService>();
+builder.Services.AddScoped<IImagemProdutoRepository, ImagemProdutoRepository>();
+builder.Services.AddScoped<IImagemProdutoService, ImagemProdutoService>();
+builder.Services.AddHttpClient<ImageSearchService>();
+builder.Services.AddScoped<ImageSearchService>();
+builder.Services.AddScoped<PostWebGeneratorService>();
 builder.Services.AddDbContext<EmpresaContexto>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
@@ -43,6 +53,21 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseSession();
+
+// Adicionar middleware para capturar erros de serialização
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro capturado pelo middleware: {ex.Message}");
+        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        throw;
+    }
+});
 
 app.UseAuthorization();
 

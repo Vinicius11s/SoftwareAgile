@@ -1,0 +1,339 @@
+@model Domain.DTOs.PreviewData
+@{
+    ViewData["Title"] = "Personalizar Layout do Cartaz";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/preview.css" asp-append-version="true" />
+
+}
+
+<div class="customize-container">
+    <!-- Header -->
+    <div class="customize-header">
+        <h1 class="customize-title">
+            <img src="~/images/icon-aprendizado100.png" alt="Personalizar" class="me-2" style="width: 30px; height: 30px;">
+            Personalizar Layout do Cartaz
+        </h1>
+        <p class="text-light">Ajuste a posição dos elementos do cartaz conforme sua preferência</p>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="customize-content">
+        <!-- Preview do Cartaz -->
+        <div class="preview-section">
+            <h3>
+                <img src="~/images/icon-pdf.png" alt="Preview" class="me-2" style="width: 20px; height: 20px;">
+                Preview do Cartaz
+            </h3>
+             <div class="cartaz-preview" id="cartazPreview">
+                 <div id="pdf-loading" class="pdf-loading">
+                     <div class="spinner"></div>
+                     <div>Gerando prévia do PDF...</div>
+                 </div>
+                 <iframe id="pdf-viewer" class="pdf-viewer" style="display: none;" src=""></iframe>
+                 <div class="pdf-controls">
+                     <button class="pdf-control-btn" onclick="gerarPreviewPdf()" id="btn-gerar-preview">
+                         🔄 Gerar Prévia
+                     </button>
+                     <button class="pdf-control-btn" onclick="testarSerializacao()" id="btn-testar-serializacao" style="background: #17a2b8;">
+                         🧪 Testar Serialização
+                     </button>
+                 </div>
+             </div>
+        </div>
+
+        <!-- Controles de Posicionamento -->
+        <div class="controls-section">
+            <h3>
+                <img src="~/images/icon-aprendizado100.png" alt="Controles" class="me-2" style="width: 20px; height: 20px;">
+                Controles de Posicionamento
+            </h3>
+
+            <!-- Controles do Nome do Produto -->
+            <div class="control-group">
+                <h4>📝 Nome do Produto</h4>
+                
+                <div class="control-row">
+                    <span class="control-label">Altura:</span>
+                    <input type="range" class="control-slider" id="nomeAltura" min="0" max="100" value="50">
+                    <span class="control-value" id="nomeAlturaValue">50%</span>
+                </div>
+                
+            </div>
+
+            <!-- Controles do Preço -->
+            <div class="control-group">
+                <h4>💰 Preço</h4>
+                
+                
+                <div class="control-row">
+                    <span class="control-label">Lateral:</span>
+                    <input type="range" class="control-slider" id="precoLateral" min="0" max="100" value="50">
+                    <span class="control-value" id="precoLateralValue">50%</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+        <button type="button" class="btn-modern" onclick="salvarConfiguracoes()">
+            <img src="~/images/icon-pdf.png" alt="Salvar" class="me-2" style="width: 20px; height: 20px;">Salvar Configurações
+        </button>
+        <button type="button" class="btn-outline-modern" onclick="resetarConfiguracoes()">
+            🔄 Resetar
+        </button>
+        <a href="@Url.Action("Preview")" class="btn-outline-modern">
+            ↩️ Voltar ao Preview
+        </a>
+    </div>
+</div>
+
+ @section Scripts {
+     <!-- PDF.js Library -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+     
+     <script>
+         // Configurar PDF.js
+         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+         
+         let pdfUrl = '';
+         let currentPdf = null;
+         
+         // Configurações atuais
+         let configuracoes = {
+            nomeAltura: 50,
+            precoLateral: 50,
+         };
+
+         // Carregar configurações salvas
+         function carregarConfiguracoes() {
+             const fundoId = '@Model.FundoSelecionado';
+             const tamanho = '@Model.TamanhoSelecionado';
+             const chave = `cartazConfig_${fundoId}_${tamanho}`;
+             
+             const salvas = localStorage.getItem(chave);
+             if (salvas) {
+                 configuracoes = JSON.parse(salvas);
+                 aplicarConfiguracoes();
+             }
+         }
+
+        // Aplicar configurações aos sliders
+        function aplicarConfiguracoes() {
+            document.getElementById('nomeAltura').value = configuracoes.nomeAltura;
+            document.getElementById('precoLateral').value = configuracoes.precoLateral;
+            
+            atualizarValores();
+        }
+
+        // Atualizar valores dos sliders
+        function atualizarValores() {
+            document.getElementById('nomeAlturaValue').textContent = configuracoes.nomeAltura + '%';
+            document.getElementById('precoLateralValue').textContent = configuracoes.precoLateral + '%';
+        }
+
+         // Salvar configurações
+         function salvarConfiguracoes() {
+             const fundoId = '@Model.FundoSelecionado';
+             const tamanho = '@Model.TamanhoSelecionado';
+             const chave = `cartazConfig_${fundoId}_${tamanho}`;
+             
+             localStorage.setItem(chave, JSON.stringify(configuracoes));
+             showNotification('Configurações salvas com sucesso!', 'success');
+         }
+
+        // Resetar configurações
+        function resetarConfiguracoes() {
+            configuracoes = {
+            nomeAltura: 50,
+            precoLateral: 50,
+            };
+            aplicarConfiguracoes();
+            showNotification('Configurações resetadas!', 'info');
+        }
+
+        // Função para mostrar notificações
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                color: white;
+                font-weight: bold;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (type === 'success') notification.style.backgroundColor = '#28a745';
+            else if (type === 'error') notification.style.backgroundColor = '#dc3545';
+            else if (type === 'info') notification.style.backgroundColor = '#17a2b8';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+         // Atualizar preview em tempo real
+         let previewTimeout;
+         function atualizarPreviewEmTempoReal() {
+             // Debounce para evitar muitas requisições
+             clearTimeout(previewTimeout);
+             previewTimeout = setTimeout(() => {
+                 console.log('Configurações atuais:', configuracoes);
+                 gerarPreviewPdf();
+             }, 500); // Aguarda 500ms após parar de mover o slider
+         }
+
+         // Testar serialização
+         function testarSerializacao() {
+             const requestData = {
+                 ofertas: @Html.Raw(Json.Serialize(Model.Ofertas)),
+                 fundoSelecionado: '@Model.FundoSelecionado',
+                 tamanhoSelecionado: '@Model.TamanhoSelecionado',
+                 configuracoes: {
+                     nomeAltura: configuracoes.nomeAltura,
+                     precoLateral: configuracoes.precoLateral,
+                 }
+             };
+             
+             console.log('Testando serialização com dados:', requestData);
+             
+             fetch('@Url.Action("TesteSerializacao", "Pdf")', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                 },
+                 body: JSON.stringify(requestData)
+             })
+             .then(response => {
+                 console.log('Status da resposta do teste:', response.status);
+                 return response.json();
+             })
+             .then(data => {
+                 console.log('Resposta do teste:', data);
+                 showNotification('Teste de serialização: ' + data.message, data.success ? 'success' : 'error');
+             })
+             .catch(error => {
+                 console.error('Erro no teste:', error);
+                 showNotification('Erro no teste: ' + error.message, 'error');
+             });
+         }
+
+         // Gerar preview do PDF
+         function gerarPreviewPdf() {
+             const loading = document.getElementById('pdf-loading');
+             const viewer = document.getElementById('pdf-viewer');
+             const btnGerar = document.getElementById('btn-gerar-preview');
+             
+             // Mostrar loading
+             loading.style.display = 'flex';
+             viewer.style.display = 'none';
+             btnGerar.disabled = true;
+             btnGerar.textContent = '⏳ Gerando...';
+             
+             // Gerar PDF temporário para preview
+             const requestData = {
+                 ofertas: @Html.Raw(Json.Serialize(Model.Ofertas)),
+                 fundoSelecionado: '@Model.FundoSelecionado',
+                 tamanhoSelecionado: '@Model.TamanhoSelecionado',
+                 configuracoes: {
+                     nomeAltura: configuracoes.nomeAltura,
+                     precoLateral: configuracoes.precoLateral,
+                 }
+             };
+             
+             console.log('Enviando dados:', requestData);
+             console.log('URL da requisição:', '@Url.Action("GerarPreviewPdf", "Pdf")');
+             
+             fetch('@Url.Action("GerarPreviewPdf", "Pdf")', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                 },
+                 body: JSON.stringify(requestData)
+             })
+             .then(response => {
+                 console.log('Status da resposta:', response.status);
+                 console.log('Headers da resposta:', response.headers);
+                 
+                 if (!response.ok) {
+                     console.error('Erro na resposta:', response.status, response.statusText);
+                     return response.text().then(text => {
+                         console.error('Conteúdo da resposta de erro:', text);
+                         throw new Error(`Erro ao gerar preview do PDF: ${response.status} - ${text}`);
+                     });
+                 }
+                 return response.blob();
+             })
+             .then(blob => {
+                 // Criar URL do blob
+                 pdfUrl = URL.createObjectURL(blob);
+                 
+                 // Mostrar PDF no iframe
+                 viewer.src = pdfUrl;
+                 viewer.style.display = 'block';
+                 loading.style.display = 'none';
+                 
+                 // Habilitar botão
+                 btnGerar.disabled = false;
+                 btnGerar.textContent = '🔄 Gerar Prévia';
+                 
+                 showNotification('Preview do PDF gerado com sucesso!', 'success');
+             })
+             .catch(error => {
+                 console.error('Erro:', error);
+                 loading.innerHTML = `
+                     <div style="color: #dc3545; text-align: center;">
+                         <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
+                         <div>Erro ao gerar preview: ${error.message}</div>
+                         <button onclick="gerarPreviewPdf()" style="margin-top: 1rem; padding: 8px 16px; background: #f5c518; border: none; border-radius: 5px; cursor: pointer;">
+                             Tentar Novamente
+                         </button>
+                     </div>
+                 `;
+                 btnGerar.disabled = false;
+                 btnGerar.textContent = '🔄 Gerar Prévia';
+                 showNotification('Erro ao gerar preview: ' + error.message, 'error');
+             });
+         }
+
+         // Event listeners para os sliders
+         document.addEventListener('DOMContentLoaded', function() {
+             carregarConfiguracoes();
+             
+             // Gerar preview automaticamente
+             setTimeout(() => {
+                 gerarPreviewPdf();
+             }, 1000);
+             
+             // Nome do produto
+             document.getElementById('nomeAltura').addEventListener('input', function() {
+                 configuracoes.nomeAltura = this.value;
+                 document.getElementById('nomeAlturaValue').textContent = this.value + '%';
+                 atualizarPreviewEmTempoReal();
+             });
+             
+            // Preço
+             
+             document.getElementById('precoLateral').addEventListener('input', function() {
+                 configuracoes.precoLateral = this.value;
+                 document.getElementById('precoLateralValue').textContent = this.value + '%';
+                 atualizarPreviewEmTempoReal();
+             });
+             
+         });
+    </script>
+}
